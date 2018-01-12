@@ -1,3 +1,8 @@
+digit		[0-9]
+number		{digit}{1,}
+letter		[a-zA-z]
+identifier	({letter})({letter}|{digit})*([_]({letter}|{digit})+)*
+
 %%
 "function" 	{printf("FUNCTION");}
 "beginparams" 	{printf("BEGIN_PARAMS");}
@@ -45,6 +50,8 @@
 "[" 	{printf("L_SQUARE_BRACKET");}
 "]" 	{printf("R_SQUARE_BRACKET");}
 ":=" 	{printf("ASSIGN");}
+{number}	{printf("NUMBER %s", yytext);}
+{identifier}	{printf("IDENT %s", yytext);}
 %%
 
 main()
