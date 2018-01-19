@@ -568,8 +568,8 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "project1.lex"
-int curPos = 0;
-int curLine = 0;
+int curPos = 1;
+int curLine = 1;
 #line 574 "lex.yy.c"
 
 #define INITIAL 0
@@ -1071,7 +1071,7 @@ case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
 #line 55 "project1.lex"
-{curLine++; curPos = 0;}
+{curLine++; curPos = 1;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
@@ -1101,7 +1101,7 @@ YY_RULE_SETUP
 case 53:
 YY_RULE_SETUP
 #line 61 "project1.lex"
-{printf("Cur Line is %d, Cur Pos is %d\n", curLine, curPos);}
+{printf("Cur Line is %d, Cur Pos is %d\n", curLine, curPos); curPos += yyleng;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP

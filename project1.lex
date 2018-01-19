@@ -3,8 +3,8 @@ number		{digit}{1,}
 letter		[a-zA-Z]
 identifier	({letter})({letter}|{digit})*(_({letter}|{digit})+)*
 
-	int curPos = 0;
-	int curLine = 0;
+	int curPos = 1;
+	int curLine = 1;
 %%
 "function" 	{printf("FUNCTION\n", yytext); curPos += yyleng;}
 "beginparams" 	{printf("BEGIN_PARAMS\n", yytext); curPos += yyleng;}
@@ -52,13 +52,13 @@ identifier	({letter})({letter}|{digit})*(_({letter}|{digit})+)*
 "[" 	{printf("L_SQUARE_BRACKET\n", yytext); curPos += yyleng;}
 "]" 	{printf("R_SQUARE_BRACKET\n", yytext); curPos += yyleng;}
 ":=" 	{printf("ASSIGN\n", yytext); curPos += yyleng;}
-"\n"	{curLine++; curPos = 0;}
+"\n"	{curLine++; curPos = 1;}
 " "		{curPos += yyleng;}
 "	"	{curPos += yyleng;}
 "##".*	{curPos += yyleng;}
 {number}	{printf("NUMBER %s\n", yytext);}
 {identifier}	{printf("IDENT %s\n", yytext);}
-.	{printf("Cur Line is %d, Cur Pos is %d\n", curLine, curPos);}
+.	{printf("Cur Line is %d, Cur Pos is %d\n", curLine, curPos); curPos += yyleng;}
 %%
 
 main()
