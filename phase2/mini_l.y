@@ -16,13 +16,27 @@ int yylex(void);
 int val;
 string* op_val;
 }
-@start prog_start
+@start program
 
-%token FUNCTION BEGINPARAMS ENDPARAMS BEGINLOCALS ENDLOCALS BEGINBODY ENDBODY INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE READ WRITE TRUE FALSE SEMICOLON COLON COMMA LPAREN RPAREN LSQUARE RSQUARE ASSIGN RETURN
-%token <val> NUMBERS
-%token <op_val> IDENTIFIERS
+
+%token FUNCTION BEGINPARAMS ENDPARAMS BEGINLOCALS ENDLOCALS BEGINBODY ENDBODY 
+%token INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE 
+%token READ WRITE TRUE FALSE SEMICOLON COLON COMMA  
+%token ASSIGN RETURN
+
+%token <val> NUMBER
+%token <op_val> IDENT
+
+%left LPAREN RPAREN LSQUARE RSQUARE
 %left MULT DIV MOD ADD SUB
 %left LT LTE GT GTE EQ NEQ
+%right NOT ASSIGN
+
+%error-verbose
+%start program
 
 %%
-program:				PROGRAM IDENT SEMICOLON 
+program:	function program { printf("program -> function program\n"); }
+			| function { printf("program -> function\n"); }
+			
+function:	function identifier semicolon beginparams declaration_s endparams beginlocals declaration_s endlocals beginbody statement_ns endbody { printf("Function -> function identifier ; beginparams DeclarationS endparams beginlocals DeclarationS endlocals beginbody StatementNS endbody \n"); }
