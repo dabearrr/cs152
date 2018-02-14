@@ -23,3 +23,6 @@ string* op_val;
 %token <op_val> IDENTIFIERS
 %left MULT DIV MOD ADD SUB
 %left LT LTE GT GTE EQ NEQ
+
+%%
+program:				PROGRAM IDENT SEMICOLON 
