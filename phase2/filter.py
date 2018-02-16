@@ -12,5 +12,5 @@ with open('output.txt', 'a') as the_file:
     for x in array:
 		temp1 = str(x[0])
 		temp2 =  str(x[1]) 
-		temp = "\"" + temp1 + "\" \t" + "{printf(\"" + temp2 + "\\n\", yytext); curPos += yyleng;}\n"
+		temp = "\"" + temp1 + "\" \t" + "{curPos += yyleng; return " + temp2 + ";}\n"
 		the_file.write(temp)
