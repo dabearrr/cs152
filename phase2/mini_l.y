@@ -39,7 +39,7 @@ program:	/* empty */
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	FUNCTION identifier SEMICOLON beginparams declaration_s endparams beginlocals declaration_s endlocals beginbody statement_ns endbody { printf("Function -> function identifier ; beginparams DeclarationS endparams beginlocals DeclarationS endlocals beginbody StatementNS endbody \n"); }
+function:	FUNCTION IDENT SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY { PRINTF(" FUNCTION IDENTIFIER SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY \n"); }
 			;
 
 declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
