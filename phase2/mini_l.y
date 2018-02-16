@@ -17,6 +17,9 @@ int val;
 string* op_val;
 }
 
+%error-verbose
+%start program
+
 %token FUNCTION BEGINPARAMS ENDPARAMS BEGINLOCALS ENDLOCALS BEGINBODY ENDBODY 
 %token INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE 
 %token READ WRITE TRUE FALSE SEMICOLON COLON COMMA  
@@ -30,19 +33,16 @@ string* op_val;
 %token LT LTE GT GTE EQ NEQ
 %token NOT
 
-%error-verbose
-%start program
-
 %%
 program:	/* empty */
 			| function program { printf("program -> function program\n"); }
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	function identifier semicolon beginparams declaration_s endparams beginlocals declaration_s endlocals beginbody statement_ns endbody { printf("Function -> function identifier ; beginparams DeclarationS endparams beginlocals DeclarationS endlocals beginbody StatementNS endbody \n"); }
+function:	FUNCTION identifier SEMICOLON beginparams declaration_s endparams beginlocals declaration_s endlocals beginbody statement_ns endbody { printf("Function -> function identifier ; beginparams DeclarationS endparams beginlocals DeclarationS endlocals beginbody StatementNS endbody \n"); }
 			;
 
-declaration_s:	declaration semicolon declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
+declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
 				;
 
 
