@@ -1,0 +1,284 @@
+Nonterminals useless in grammar
+
+   function
+   declaration_s
+   statement_ns
+   declaration
+   identifier_ns
+   arrayint
+   statement
+   a_statement
+   b_statement
+   c_statement
+   d_statement
+   e_statement
+   f_statement
+   g_statement
+   h_statement
+   i_statement
+   var
+   var_ns
+   bool_expr
+   relation_and_expr
+   relation_expr
+   rexpr
+   comp
+   expression
+   exprsum_s
+   multiplicative_expr
+   term_s
+   term
+   upterm
+   termidentifier
+   termexpression
+
+
+Terminals unused in grammar
+
+   FUNCTION
+   BEGINPARAMS
+   ENDPARAMS
+   BEGINLOCALS
+   ENDLOCALS
+   BEGINBODY
+   ENDBODY
+   INTEGER
+   ARRAY
+   OF
+   IF
+   THEN
+   ENDIF
+   ELSE
+   WHILE
+   DO
+   BEGINLOOP
+   ENDLOOP
+   CONTINUE
+   READ
+   WRITE
+   TRUE
+   FALSE
+   SEMICOLON
+   COLON
+   COMMA
+   ASSIGN
+   RETURN
+   FOREACH
+   IN
+   AND
+   NUMBER
+   IDENT
+   L_PAREN
+   R_PAREN
+   L_SQUARE_BRACKET
+   R_SQUARE_BRACKET
+   MULT
+   DIV
+   MOD
+   ADD
+   SUB
+   LT
+   LTE
+   GT
+   GTE
+   EQ
+   NEQ
+   NOT
+
+
+Rules useless in grammar
+
+    2 program: function program
+    3        | function
+
+    4 function: FUNCTION IDENT SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY
+
+    5 declaration_s: declaration SEMICOLON declaration_s
+
+    6 statement_ns: statement SEMICOLON statement_ns
+    7             | statement SEMICOLON
+
+    8 declaration: identifier_ns COLON arrayint
+
+    9 identifier_ns: IDENT COMMA identifier_ns
+   10              | IDENT
+
+   11 arrayint: INTEGER
+   12         | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+
+   13 statement: a_statement
+   14          | b_statement
+   15          | c_statement
+   16          | d_statement
+   17          | e_statement
+   18          | f_statement
+   19          | h_statement
+   20          | i_statement
+
+   21 a_statement: var ASSIGN expression
+
+   22 b_statement: IF bool_expr THEN statement_ns ENDIF
+   23            | IF bool_expr THEN ELSE statement_ns ENDIF
+
+   24 c_statement: WHILE bool_expr BEGINLOOP statement_ns ENDLOOP
+
+   25 d_statement: DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr
+
+   26 e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP
+
+   27 f_statement: READ var_ns
+
+   28 g_statement: WRITE var_ns
+
+   29 h_statement: CONTINUE
+
+   30 i_statement: RETURN expression
+
+   31 var: IDENT
+   32    | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+
+   33 var_ns: var COMMA var_ns
+   34       | var COMMA
+
+   35 bool_expr: relation_and_expr
+   36          | relation_and_expr
+   37          | bool_expr
+
+   38 relation_and_expr: relation_expr
+   39                  | relation_expr AND relation_and_expr
+
+   40 relation_expr: NOT rexpr
+   41              | rexpr
+
+   42 rexpr: expression comp expression
+   43      | TRUE
+   44      | FALSE
+   45      | L_PAREN bool_expr R_PAREN
+
+   46 comp: EQ
+   47     | NEQ
+   48     | LT
+   49     | GT
+   50     | LTE
+   51     | GTE
+
+   52 expression: multiplicative_expr exprsum_s
+   53           | multiplicative_expr
+
+   54 exprsum_s: ADD multiplicative_expr exprsum_s
+   55          | SUB multiplicative_expr exprsum_s
+
+   56 multiplicative_expr: term term_s
+   57                    | term
+
+   58 term_s: MULT term term_s
+   59       | DIV term term_s
+   60       | MOD term term_s
+
+   61 term: upterm
+   62     | SUB upterm
+   63     | IDENT
+   64     | termidentifier
+
+   65 upterm: var
+   66       | NUMBER
+   67       | L_PAREN expression R_PAREN
+
+   68 termidentifier: L_PAREN termexpression R_PAREN
+   69               | L_PAREN R_PAREN
+
+   70 termexpression: expression
+   71               | expression COMMA termexpression
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+FUNCTION (258)
+BEGINPARAMS (259)
+ENDPARAMS (260)
+BEGINLOCALS (261)
+ENDLOCALS (262)
+BEGINBODY (263)
+ENDBODY (264)
+INTEGER (265)
+ARRAY (266)
+OF (267)
+IF (268)
+THEN (269)
+ENDIF (270)
+ELSE (271)
+WHILE (272)
+DO (273)
+BEGINLOOP (274)
+ENDLOOP (275)
+CONTINUE (276)
+READ (277)
+WRITE (278)
+TRUE (279)
+FALSE (280)
+SEMICOLON (281)
+COLON (282)
+COMMA (283)
+ASSIGN (284)
+RETURN (285)
+FOREACH (286)
+IN (287)
+AND (288)
+NUMBER (289)
+IDENT (290)
+L_PAREN (291)
+R_PAREN (292)
+L_SQUARE_BRACKET (293)
+R_SQUARE_BRACKET (294)
+MULT (295)
+DIV (296)
+MOD (297)
+ADD (298)
+SUB (299)
+LT (300)
+LTE (301)
+GT (302)
+GTE (303)
+EQ (304)
+NEQ (305)
+NOT (306)
+
+
+Nonterminals, with rules where they appear
+
+$accept (52)
+    on left: 0
+program (53)
+    on left: 1, on right: 0
+
+
+State 0
+
+    0 $accept: . program $end
+
+    $default  reduce using rule 1 (program)
+
+    program  go to state 1
+
+
+State 1
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 2
+
+
+State 2
+
+    0 $accept: program $end .
+
+    $default  accept

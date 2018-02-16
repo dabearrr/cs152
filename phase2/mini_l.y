@@ -30,7 +30,7 @@ string* op_val;
 %token <val> NUMBER
 %token <op_val> IDENT
 
-%token LPAREN RPAREN LSQUARE RSQUARE
+%token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
 %token MULT DIV MOD ADD SUB
 %token LT LTE GT GTE EQ NEQ
 %token NOT
@@ -47,7 +47,7 @@ function:	FUNCTION IDENT SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCA
 declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
 				;
 
-statement_ns: statement SEMICOLON | statement SEMICOLON
+statement_ns: statement SEMICOLON statement_ns | statement SEMICOLON
             ;
 
 declaration: identifier_ns COLON arrayint
@@ -56,7 +56,7 @@ declaration: identifier_ns COLON arrayint
 identifier_ns: IDENT COMMA identifier_ns | IDENT
              ;
 
-arrayint: INTEGER | ARRAY LSQUARE NUMBER RSQUARE OF INTEGER
+arrayint: INTEGER | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
         ;
 
 statement: a_statement | b_statement | c_statement | d_statement | e_statement | f_statement | h_statement | i_statement
@@ -89,7 +89,7 @@ h_statement: CONTINUE
 i_statement: RETURN expression
            ;
 
-var: IDENT | IDENT LSQUARE expression RSQUARE
+var: IDENT | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
    ;
 
 var_ns: var COMMA var_ns | var COMMA
@@ -104,7 +104,7 @@ relation_and_expr: relation_expr | relation_expr AND relation_and_expr
 relation_expr: NOT rexpr | rexpr
              ;
 
-rexpr: expression comp expression | TRUE | FALSE | LPAREN bool_expr RPAREN
+rexpr: expression comp expression | TRUE | FALSE | L_PAREN bool_expr R_PAREN
      ;
 
 comp: EQ | NEQ | LT | GT | LTE | GTE 
@@ -125,10 +125,10 @@ term_s: MULT term term_s | DIV term term_s | MOD term term_s
 term: upterm | SUB upterm | IDENT | termidentifier
     ;
 
-upterm: var | NUMBER | LPAREN expression RPAREN
+upterm: var | NUMBER | L_PAREN expression R_PAREN
       ;
 
-termidentifier: LPAREN termexpression RPAREN | LPAREN RPAREN
+termidentifier: L_PAREN termexpression R_PAREN | L_PAREN R_PAREN
               ;
 
 termexpression: expression | expression COMMA termexpression
