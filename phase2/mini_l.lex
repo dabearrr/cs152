@@ -1,9 +1,9 @@
 digit		[0-9]
 number		{digit}{1,}
 letter		[a-zA-Z]
-identifier	({letter})({letter}|{digit})*(_+({letter}|{digit})+)*
+ident	({letter})({letter}|{digit})*(_+({letter}|{digit})+)*
 badida		({digit}|_+)({letter}|{digit})*((_)+({letter}|{digit})+)*
-badidb		{identifier}_+
+badidb		{ident}_+
 
 	int curPos = 1;
 	int curLine = 1;
@@ -58,8 +58,8 @@ badidb		{identifier}_+
 " "		{curPos += yyleng;}
 "	"	{curPos += yyleng;}
 "##".*	{curPos += yyleng;}
-{number}	{printf("NUMBER %s\n", yytext);}
-{identifier}	{printf("IDENT %s\n", yytext);}
+{number}	{return NUMBER;}
+{ident}	{return IDENT;}
 {badida}	{printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 {badidb}	{printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 .	{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
