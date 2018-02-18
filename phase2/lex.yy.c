@@ -2154,11 +2154,3 @@ void yyfree (void * ptr )
 
 
 
-int main()
-{
-  printf("");
-  yylex();
-  
-  return 0;
-}
-

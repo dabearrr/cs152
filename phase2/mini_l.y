@@ -1,15 +1,19 @@
 %{
-#define YY_NO_UNPUT
+	#define YY_NO_UNPUT
 
-#include <stdio.h>
-#include <stdlib.h>
-int yyerror (char* s);
-int yylex(void);
+	#include <stdio.h>
+	#include <stdlib.h>
+	int yyerror (char* s);
+	int yylex(void);
+	extern int curPos;
+	extern int curLine;
+	extern char* yytext;
+	FILE* inputFile;
 %}
 
-%union{
-int val;
-char* op_val;
+%union {
+	int val;
+	char* op_val;
 }
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
@@ -27,6 +31,7 @@ char* op_val;
 %token LT LTE GT GTE EQ NEQ
 %token NOT
 
+%error-verbose
 %start program
 
 %%
@@ -34,32 +39,54 @@ program:	program function { printf("program -> function program\n"); }
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	FUNCTION IDENT SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY { printf(" FUNCTION IDENTIFIER SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY \n"); }
+function:	FUNCTION IDENT SEMICOLON function_chunk_a function_chunk_b function_chunk_c { printf(" FUNCTION IDENT SEMICOLON function_chunk_a function_chunk_b function_chunk_c \n"); }
 			;
 
+function_chunk_a: 	BEGIN_PARAMS declaration_s END_PARAMS { printf("function_chunk_a -> BEGIN_PARAMS declaration_s END_PARAMS \n"); }
+					| BEGIN_PARAMS END_PARAMS { printf("function_chunk_a -> BEGIN_PARAMS END_PARAMS \n"); }
+
+function_chunk_b: 	BEGIN_LOCALS declaration_s END_LOCALS { printf("function_chunk_b -> BEGIN_LOCALS declaration_s END_LOCALS\n"); }
+					| BEGIN_LOCALS END_LOCALS { printf("function_chunk_b -> BEGIN_LOCALS END_LOCALS\n"); }
+
+function_chunk_c: 	BEGIN_BODY statement_ns END_BODY { printf("function_chunk_c -> BEGIN_BODY statement_ns END_BODY \n"); }
+					| BEGIN_BODY END_BODY { printf("function_chunk_c -> BEGIN_BODY END_BODY \n"); }
+			
+			
 declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s \n"); }
 				| declaration SEMICOLON { printf("declaration_s -> declaration\n"); }
 				;
 
-statement_ns: statement SEMICOLON statement_ns | statement SEMICOLON
+statement_ns: 	statement SEMICOLON statement_ns { printf("statement SEMICOLON statement_ns \n"); }
+				| statement SEMICOLON { printf("statement_ns -> statement SEMICOLON \n"); }
             ;
 
-declaration: identifier_ns COLON arrayint
+declaration: identifier_ns COLON arrayint { printf("declaration -> identifier_ns COLON arrayint \n"); }
            ;
 
-identifier_ns: IDENT COMMA identifier_ns | IDENT
+identifier_ns: 	IDENT COMMA identifier_ns { printf("identifier_ns -> IDENT COMMA identifier_ns \n"); }
+				| IDENT { printf("identifier_ns -> IDENT \n"); }
              ;
 
-arrayint: INTEGER | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
+arrayint: 	INTEGER { printf("arrayint -> INTEGER \n"); }
+			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER { printf("arrayint -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER \n"); }
         ;
 
-statement: a_statement | b_statement | c_statement | d_statement | e_statement | f_statement | g_statement | h_statement | i_statement
+statement: 	a_statement { printf("statement -> a_statement \n"); }
+			| b_statement { printf("statement -> b_statement \n"); }
+			| c_statement { printf("statement -> c_statement \n"); }
+			| d_statement { printf("statement -> d_statement \n"); }
+			| e_statement { printf("statement -> e_statement \n"); }
+			| f_statement { printf("statement -> f_statement \n"); }
+			| g_statement { printf("statement -> g_statement \n"); }
+			| h_statement { printf("statement -> h_statement \n"); }
+			| i_statement { printf("statement -> i_statement \n"); }
          ;
 
-a_statement: var ASSIGN expression 
+a_statement: var ASSIGN expression { printf("a_statement -> var ASSIGN expression \n"); }
            ;
 
-b_statement: IF bool_expr THEN statement_ns ENDIF | IF bool_expr THEN ELSE statement_ns ENDIF
+b_statement: 	IF bool_expr THEN statement_ns ENDIF { printf("b_statement -> IF bool_expr THEN statement_ns ENDIF \n"); }
+				| IF bool_expr THEN ELSE statement_ns ENDIF { printf("b_statement -> IF bool_expr THEN ELSE statement_ns ENDIF \n"); }
            ;
 
 c_statement: WHILE bool_expr BEGINLOOP statement_ns ENDLOOP
@@ -114,33 +141,52 @@ exprsum:	ADD multiplicative_expr | SUB multiplicative_expr
 
 multiplicative_expr: term term_s | term
                    ;
-				   
-mexpr_op: 	MULT | DIV | MOD
-			;
 			
-term_s: mexpr_op term term_s | mexpr_op term
+term_s: MULT term term_s { printf("term_s -> MULT term term_s \n"); }
+		| MULT term { printf("term_s -> MULT term \n"); }
+		| DIV term term_s { printf("term_s -> DIV term term_s \n"); }
+		| DIV term { printf("term_s -> DIV term \n"); }
+		| MOD term term_s { printf("term_s -> MOD term term_s \n"); }
+		| MOD term { printf("term_s -> MOD term \n"); }
 		;
 
-term: upterm | SUB upterm | IDENT termidentifier
+term: 	upterm { printf("term -> upterm \n"); }
+		| SUB upterm { printf("term -> SUB upterm \n"); }
+		| IDENT termidentifier { printf("term -> IDENT termidentifier \n"); }
     ;
 
-upterm: var | NUMBER | L_PAREN expression R_PAREN
+upterm: var { printf("upterm -> var \n"); }
+		| NUMBER { printf("upterm -> NUMBER \n"); }
+		| L_PAREN expression R_PAREN { printf("upterm -> L_PAREN expression R_PAREN \n"); }
       ;
 
-termidentifier: L_PAREN termexpression R_PAREN | L_PAREN R_PAREN
+termidentifier: L_PAREN termexpression R_PAREN { printf("termidentifier -> L_PAREN termexpression R_PAREN \n"); }
+				| L_PAREN R_PAREN { printf("termidentifier -> L_PAREN R_PAREN \n"); }
               ;
 
-termexpression: expression | expression COMMA termexpression
+termexpression: expression { printf("termexpression -> expression \n"); }
+				| expression COMMA termexpression { printf("termexpression -> expression COMMA termexpression \n"); }
 
 %%
 
-int yyerror(char* s)
-{
-  extern int curPos;	// defined and maintained in lex.c
-  extern int curLine;	// defined and maintained in lex.c
-  extern char *yytext;	// defined and maintained in lex.c
+int main(int argc, char ** argv) {
+  if(argc > 1) {
+      inputFile = fopen(argv[1], "r");
+      if(!inputFile) {
+         inputFile = stdin;
+      }
+   }
+   else {
+      inputFile = stdin;
+   }
+   
+   yyparse();
   
-  printf("Error at line %d, column %d: identifier \"%s\", Error is: %s", curLine, curPos, yytext, s);
+  return 0;
+}
+
+int yyerror(char* s) {
+  printf("Error at line %d, column %d: Error at \"%s\" \n", curLine, curPos, s);
   exit(1);
 }
 

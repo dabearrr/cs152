@@ -68,11 +68,3 @@ badidb		{ident}_+
 {badidb}	{printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 .	{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 %%
-
-int main()
-{
-  printf("");
-  yylex();
-  
-  return 0;
-}
