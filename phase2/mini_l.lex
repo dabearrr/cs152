@@ -1,12 +1,16 @@
+
+%{   
+	#include "y.tab.h"
+	int curPos = 1;
+	int curLine = 1;
+%}
+	
 digit		[0-9]
 number		{digit}{1,}
 letter		[a-zA-Z]
 ident	({letter})({letter}|{digit})*(_+({letter}|{digit})+)*
 badida		({digit}|_+)({letter}|{digit})*((_)+({letter}|{digit})+)*
 badidb		{ident}_+
-
-	int curPos = 1;
-	int curLine = 1;
 %%
 "function" 	{curPos += yyleng; return FUNCTION;}
 "beginparams" 	{curPos += yyleng; return BEGIN_PARAMS;}
@@ -65,8 +69,10 @@ badidb		{ident}_+
 .	{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 %%
 
-main()
+int main()
 {
   printf("");
   yylex();
+  
+  return 0;
 }

@@ -66,17 +66,10 @@
 
 #define YY_NO_UNPUT
 
-using namespace std;
-
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <stdlib.h>
-
 int yyerror (char* s);
 int yylex(void);
 
-#line 80 "y.tab.c" /* yacc.c:339  */
+#line 73 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -112,12 +105,12 @@ extern int yydebug;
   enum yytokentype
   {
     FUNCTION = 258,
-    BEGINPARAMS = 259,
-    ENDPARAMS = 260,
-    BEGINLOCALS = 261,
-    ENDLOCALS = 262,
-    BEGINBODY = 263,
-    ENDBODY = 264,
+    BEGIN_PARAMS = 259,
+    END_PARAMS = 260,
+    BEGIN_LOCALS = 261,
+    END_LOCALS = 262,
+    BEGIN_BODY = 263,
+    END_BODY = 264,
     INTEGER = 265,
     ARRAY = 266,
     OF = 267,
@@ -142,24 +135,25 @@ extern int yydebug;
     FOREACH = 286,
     IN = 287,
     AND = 288,
-    NUMBER = 289,
-    IDENT = 290,
-    L_PAREN = 291,
-    R_PAREN = 292,
-    L_SQUARE_BRACKET = 293,
-    R_SQUARE_BRACKET = 294,
-    MULT = 295,
-    DIV = 296,
-    MOD = 297,
-    ADD = 298,
-    SUB = 299,
-    LT = 300,
-    LTE = 301,
-    GT = 302,
-    GTE = 303,
-    EQ = 304,
-    NEQ = 305,
-    NOT = 306
+    OR = 289,
+    NUMBER = 290,
+    IDENT = 291,
+    L_PAREN = 292,
+    R_PAREN = 293,
+    L_SQUARE_BRACKET = 294,
+    R_SQUARE_BRACKET = 295,
+    MULT = 296,
+    DIV = 297,
+    MOD = 298,
+    ADD = 299,
+    SUB = 300,
+    LT = 301,
+    LTE = 302,
+    GT = 303,
+    GTE = 304,
+    EQ = 305,
+    NEQ = 306,
+    NOT = 307
   };
 #endif
 
@@ -168,12 +162,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "mini_l.y" /* yacc.c:355  */
+#line 8 "mini_l.y" /* yacc.c:355  */
 
 int val;
-string* op_val;
+char* op_val;
 
-#line 177 "y.tab.c" /* yacc.c:355  */
+#line 171 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -190,7 +184,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 194 "y.tab.c" /* yacc.c:358  */
+#line 188 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -435,7 +429,7 @@ union yyalloc
 #define YYLAST   0
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  52
+#define YYNTOKENS  53
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
@@ -446,7 +440,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   306
+#define YYMAXUTOK   307
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -485,14 +479,14 @@ static const yytype_uint8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51
+      45,    46,    47,    48,    49,    50,    51,    52
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39
+       0,    32,    32
 };
 #endif
 
@@ -501,14 +495,14 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "FUNCTION", "BEGINPARAMS", "ENDPARAMS",
-  "BEGINLOCALS", "ENDLOCALS", "BEGINBODY", "ENDBODY", "INTEGER", "ARRAY",
-  "OF", "IF", "THEN", "ENDIF", "ELSE", "WHILE", "DO", "BEGINLOOP",
+  "$end", "error", "$undefined", "FUNCTION", "BEGIN_PARAMS", "END_PARAMS",
+  "BEGIN_LOCALS", "END_LOCALS", "BEGIN_BODY", "END_BODY", "INTEGER",
+  "ARRAY", "OF", "IF", "THEN", "ENDIF", "ELSE", "WHILE", "DO", "BEGINLOOP",
   "ENDLOOP", "CONTINUE", "READ", "WRITE", "TRUE", "FALSE", "SEMICOLON",
-  "COLON", "COMMA", "ASSIGN", "RETURN", "FOREACH", "IN", "AND", "NUMBER",
-  "IDENT", "L_PAREN", "R_PAREN", "L_SQUARE_BRACKET", "R_SQUARE_BRACKET",
-  "MULT", "DIV", "MOD", "ADD", "SUB", "LT", "LTE", "GT", "GTE", "EQ",
-  "NEQ", "NOT", "$accept", "program", YY_NULLPTR
+  "COLON", "COMMA", "ASSIGN", "RETURN", "FOREACH", "IN", "AND", "OR",
+  "NUMBER", "IDENT", "L_PAREN", "R_PAREN", "L_SQUARE_BRACKET",
+  "R_SQUARE_BRACKET", "MULT", "DIV", "MOD", "ADD", "SUB", "LT", "LTE",
+  "GT", "GTE", "EQ", "NEQ", "NOT", "$accept", "program", YY_NULLPTR
 };
 #endif
 
@@ -522,7 +516,7 @@ static const yytype_uint16 yytoknum[] =
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306
+     305,   306,   307
 };
 # endif
 
@@ -580,13 +574,13 @@ static const yytype_uint8 yycheck[] =
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    53,     0
+       0,    54,     0
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    52,    53
+       0,    53,    54
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1269,7 +1263,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1273 "y.tab.c" /* yacc.c:1646  */
+#line 1267 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1497,22 +1491,16 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 136 "mini_l.y" /* yacc.c:1906  */
+#line 129 "mini_l.y" /* yacc.c:1906  */
 
 
-int yyerror(string s)
+int yyerror(char* s)
 {
   extern int curPos;	// defined and maintained in lex.c
   extern int curLine;	// defined and maintained in lex.c
   extern char *yytext;	// defined and maintained in lex.c
   
-  cerr << "ERROR: " << s << " at symbol \"" << yytext;
-  cerr << "\" on line " << yylineno << endl;
+  printf("Error at line %d, column %d: identifier \"%s\", Error is: %s", curLine, curPos, yytext, s);
   exit(1);
-}
-
-int yyerror(char *s)
-{
-  return yyerror(string(s));
 }
 

@@ -36,12 +36,12 @@ Nonterminals useless in grammar
 Terminals unused in grammar
 
    FUNCTION
-   BEGINPARAMS
-   ENDPARAMS
-   BEGINLOCALS
-   ENDLOCALS
-   BEGINBODY
-   ENDBODY
+   BEGIN_PARAMS
+   END_PARAMS
+   BEGIN_LOCALS
+   END_LOCALS
+   BEGIN_BODY
+   END_BODY
    INTEGER
    ARRAY
    OF
@@ -66,6 +66,7 @@ Terminals unused in grammar
    FOREACH
    IN
    AND
+   OR
    NUMBER
    IDENT
    L_PAREN
@@ -91,7 +92,7 @@ Rules useless in grammar
     2 program: function program
     3        | function
 
-    4 function: FUNCTION IDENT SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY
 
     5 declaration_s: declaration SEMICOLON declaration_s
 
@@ -203,12 +204,12 @@ Terminals, with rules where they appear
 $end (0) 0
 error (256)
 FUNCTION (258)
-BEGINPARAMS (259)
-ENDPARAMS (260)
-BEGINLOCALS (261)
-ENDLOCALS (262)
-BEGINBODY (263)
-ENDBODY (264)
+BEGIN_PARAMS (259)
+END_PARAMS (260)
+BEGIN_LOCALS (261)
+END_LOCALS (262)
+BEGIN_BODY (263)
+END_BODY (264)
 INTEGER (265)
 ARRAY (266)
 OF (267)
@@ -233,31 +234,32 @@ RETURN (285)
 FOREACH (286)
 IN (287)
 AND (288)
-NUMBER (289)
-IDENT (290)
-L_PAREN (291)
-R_PAREN (292)
-L_SQUARE_BRACKET (293)
-R_SQUARE_BRACKET (294)
-MULT (295)
-DIV (296)
-MOD (297)
-ADD (298)
-SUB (299)
-LT (300)
-LTE (301)
-GT (302)
-GTE (303)
-EQ (304)
-NEQ (305)
-NOT (306)
+OR (289)
+NUMBER (290)
+IDENT (291)
+L_PAREN (292)
+R_PAREN (293)
+L_SQUARE_BRACKET (294)
+R_SQUARE_BRACKET (295)
+MULT (296)
+DIV (297)
+MOD (298)
+ADD (299)
+SUB (300)
+LT (301)
+LTE (302)
+GT (303)
+GTE (304)
+EQ (305)
+NEQ (306)
+NOT (307)
 
 
 Nonterminals, with rules where they appear
 
-$accept (52)
+$accept (53)
     on left: 0
-program (53)
+program (54)
     on left: 1, on right: 0
 
 

@@ -46,12 +46,12 @@ extern int yydebug;
   enum yytokentype
   {
     FUNCTION = 258,
-    BEGINPARAMS = 259,
-    ENDPARAMS = 260,
-    BEGINLOCALS = 261,
-    ENDLOCALS = 262,
-    BEGINBODY = 263,
-    ENDBODY = 264,
+    BEGIN_PARAMS = 259,
+    END_PARAMS = 260,
+    BEGIN_LOCALS = 261,
+    END_LOCALS = 262,
+    BEGIN_BODY = 263,
+    END_BODY = 264,
     INTEGER = 265,
     ARRAY = 266,
     OF = 267,
@@ -76,24 +76,25 @@ extern int yydebug;
     FOREACH = 286,
     IN = 287,
     AND = 288,
-    NUMBER = 289,
-    IDENT = 290,
-    L_PAREN = 291,
-    R_PAREN = 292,
-    L_SQUARE_BRACKET = 293,
-    R_SQUARE_BRACKET = 294,
-    MULT = 295,
-    DIV = 296,
-    MOD = 297,
-    ADD = 298,
-    SUB = 299,
-    LT = 300,
-    LTE = 301,
-    GT = 302,
-    GTE = 303,
-    EQ = 304,
-    NEQ = 305,
-    NOT = 306
+    OR = 289,
+    NUMBER = 290,
+    IDENT = 291,
+    L_PAREN = 292,
+    R_PAREN = 293,
+    L_SQUARE_BRACKET = 294,
+    R_SQUARE_BRACKET = 295,
+    MULT = 296,
+    DIV = 297,
+    MOD = 298,
+    ADD = 299,
+    SUB = 300,
+    LT = 301,
+    LTE = 302,
+    GT = 303,
+    GTE = 304,
+    EQ = 305,
+    NEQ = 306,
+    NOT = 307
   };
 #endif
 
@@ -102,12 +103,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "mini_l.y" /* yacc.c:1909  */
+#line 8 "mini_l.y" /* yacc.c:1909  */
 
 int val;
-string* op_val;
+char* op_val;
 
-#line 111 "y.tab.h" /* yacc.c:1909  */
+#line 112 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

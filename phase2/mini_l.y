@@ -1,31 +1,24 @@
 %{
 #define YY_NO_UNPUT
 
-using namespace std;
-
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <stdlib.h>
-
 int yyerror (char* s);
 int yylex(void);
 %}
 
 %union{
 int val;
-string* op_val;
+char* op_val;
 }
 
 %error-verbose
 %start program
 
-%token FUNCTION BEGINPARAMS ENDPARAMS BEGINLOCALS ENDLOCALS BEGINBODY ENDBODY 
+%token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
 %token INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE 
 %token READ WRITE TRUE FALSE SEMICOLON COLON COMMA  
 %token ASSIGN RETURN
 %token FOREACH IN
-%token AND
+%token AND OR
 
 %token <val> NUMBER
 %token <op_val> IDENT
@@ -41,7 +34,7 @@ program:	/* empty */
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	FUNCTION IDENT SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY { PRINTF(" FUNCTION IDENTIFIER SEMICOLON BEGINPARAMS declaration_s ENDPARAMS BEGINLOCALS declaration_s ENDLOCALS BEGINBODY statement_ns ENDBODY \n"); }
+function:	FUNCTION IDENT SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY { PRINTF(" FUNCTION IDENTIFIER SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY \n"); }
 			;
 
 declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
@@ -135,19 +128,13 @@ termexpression: expression | expression COMMA termexpression
 
 %%
 
-int yyerror(string s)
+int yyerror(char* s)
 {
   extern int curPos;	// defined and maintained in lex.c
   extern int curLine;	// defined and maintained in lex.c
   extern char *yytext;	// defined and maintained in lex.c
   
-  cerr << "ERROR: " << s << " at symbol \"" << yytext;
-  cerr << "\" on line " << yylineno << endl;
+  printf("Error at line %d, column %d: identifier \"%s\", Error is: %s", curLine, curPos, yytext, s);
   exit(1);
-}
-
-int yyerror(char *s)
-{
-  return yyerror(string(s));
 }
 
