@@ -1,6 +1,8 @@
 %{
 #define YY_NO_UNPUT
 
+#include <stdio.h>
+#include <stdlib.h>
 int yyerror (char* s);
 int yylex(void);
 %}
@@ -9,9 +11,6 @@ int yylex(void);
 int val;
 char* op_val;
 }
-
-%error-verbose
-%start program
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
 %token INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE 
@@ -28,16 +27,18 @@ char* op_val;
 %token LT LTE GT GTE EQ NEQ
 %token NOT
 
+%start program
+
 %%
-program:	/* empty */
-			| function program { printf("program -> function program\n"); }
+program:	program function { printf("program -> function program\n"); }
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	FUNCTION IDENT SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY { PRINTF(" FUNCTION IDENTIFIER SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY \n"); }
+function:	FUNCTION IDENT SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY { printf(" FUNCTION IDENTIFIER SEMICOLON BEGIN_PARAMS declaration_s END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY \n"); }
 			;
 
-declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s"); }
+declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> declaration semicolon declaration_s \n"); }
+				| declaration SEMICOLON { printf("declaration_s -> declaration\n"); }
 				;
 
 statement_ns: statement SEMICOLON statement_ns | statement SEMICOLON
@@ -52,7 +53,7 @@ identifier_ns: IDENT COMMA identifier_ns | IDENT
 arrayint: INTEGER | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER
         ;
 
-statement: a_statement | b_statement | c_statement | d_statement | e_statement | f_statement | h_statement | i_statement
+statement: a_statement | b_statement | c_statement | d_statement | e_statement | f_statement | g_statement | h_statement | i_statement
          ;
 
 a_statement: var ASSIGN expression 
@@ -88,7 +89,7 @@ var: IDENT | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
 var_ns: var COMMA var_ns | var COMMA
       ;
 
-bool_expr: relation_and_expr | relation_and_expr | bool_expr
+bool_expr: relation_and_expr | relation_and_expr OR bool_expr
         ;
 
 relation_and_expr: relation_expr | relation_expr AND relation_and_expr
@@ -106,16 +107,21 @@ comp: EQ | NEQ | LT | GT | LTE | GTE
 expression: multiplicative_expr exprsum_s | multiplicative_expr
           ;
 
-exprsum_s: ADD multiplicative_expr exprsum_s | SUB multiplicative_expr exprsum_s
+exprsum_s: exprsum exprsum_s | exprsum
          ;
+		 
+exprsum:	ADD multiplicative_expr | SUB multiplicative_expr
 
 multiplicative_expr: term term_s | term
                    ;
+				   
+mexpr_op: 	MULT | DIV | MOD
+			;
+			
+term_s: mexpr_op term term_s | mexpr_op term
+		;
 
-term_s: MULT term term_s | DIV term term_s | MOD term term_s
-      ;
-
-term: upterm | SUB upterm | IDENT | termidentifier
+term: upterm | SUB upterm | IDENT termidentifier
     ;
 
 upterm: var | NUMBER | L_PAREN expression R_PAREN
