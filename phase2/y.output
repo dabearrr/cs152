@@ -140,20 +140,20 @@ ENDIF (270) 29 30
 ELSE (271) 30
 WHILE (272) 31 32
 DO (273) 32
-BEGINLOOP (274) 31 32 33
-ENDLOOP (275) 31 32 33
-CONTINUE (276) 36
-READ (277) 34
-WRITE (278) 35
-TRUE (279) 49
-FALSE (280) 50
-SEMICOLON (281) 3 10 11 12 13
-COLON (282) 14
-COMMA (283) 15 40 81
-ASSIGN (284) 28
-RETURN (285) 37
-FOREACH (286) 33
-IN (287) 33
+FOREACH (274) 33
+IN (275) 33
+BEGINLOOP (276) 31 32 33
+ENDLOOP (277) 31 32 33
+CONTINUE (278) 36
+READ (279) 34
+WRITE (280) 35
+TRUE (281) 49
+FALSE (282) 50
+SEMICOLON (283) 3 10 11 12 13
+COLON (284) 14
+COMMA (285) 15 40 81
+ASSIGN (286) 28
+RETURN (287) 37
 AND (288) 45
 OR (289) 43
 NUMBER (290) 18 76
@@ -465,11 +465,11 @@ State 23
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 41
@@ -598,52 +598,52 @@ State 34
 
 State 35
 
+   33 e_statement: FOREACH . IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP
+
+    IDENT  shift, and go to state 72
+
+
+State 36
+
    36 h_statement: CONTINUE .
 
     $default  reduce using rule 36 (h_statement)
 
 
-State 36
+State 37
 
    34 f_statement: READ . var_ns
 
     IDENT  shift, and go to state 40
 
-    var     go to state 72
-    var_ns  go to state 73
-
-
-State 37
-
-   35 g_statement: WRITE . var_ns
-
-    IDENT  shift, and go to state 40
-
-    var     go to state 72
+    var     go to state 73
     var_ns  go to state 74
 
 
 State 38
 
-   37 i_statement: RETURN . expression
+   35 g_statement: WRITE . var_ns
 
-    NUMBER   shift, and go to state 56
-    IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
-    SUB      shift, and go to state 59
+    IDENT  shift, and go to state 40
 
-    var                  go to state 61
-    expression           go to state 76
-    multiplicative_expr  go to state 67
-    term                 go to state 68
-    upterm               go to state 69
+    var     go to state 73
+    var_ns  go to state 75
 
 
 State 39
 
-   33 e_statement: FOREACH . IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP
+   37 i_statement: RETURN . expression
 
-    IDENT  shift, and go to state 77
+    NUMBER   shift, and go to state 56
+    IDENT    shift, and go to state 57
+    L_PAREN  shift, and go to state 76
+    SUB      shift, and go to state 59
+
+    var                  go to state 61
+    expression           go to state 77
+    multiplicative_expr  go to state 67
+    term                 go to state 68
+    upterm               go to state 69
 
 
 State 40
@@ -813,7 +813,7 @@ State 59
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 40
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
 
     var     go to state 61
     upterm  go to state 87
@@ -943,11 +943,11 @@ State 71
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 108
@@ -966,56 +966,56 @@ State 71
 
 State 72
 
+   33 e_statement: FOREACH IDENT . IN IDENT BEGINLOOP statement_ns ENDLOOP
+
+    IN  shift, and go to state 109
+
+
+State 73
+
    40 var_ns: var . COMMA var_ns
    41       | var .
 
-    COMMA  shift, and go to state 109
+    COMMA  shift, and go to state 110
 
     $default  reduce using rule 41 (var_ns)
 
 
-State 73
+State 74
 
    34 f_statement: READ var_ns .
 
     $default  reduce using rule 34 (f_statement)
 
 
-State 74
+State 75
 
    35 g_statement: WRITE var_ns .
 
     $default  reduce using rule 35 (g_statement)
 
 
-State 75
+State 76
 
    77 upterm: L_PAREN . expression R_PAREN
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
-    expression           go to state 110
+    expression           go to state 111
     multiplicative_expr  go to state 67
     term                 go to state 68
     upterm               go to state 69
 
 
-State 76
+State 77
 
    37 i_statement: RETURN expression .
 
     $default  reduce using rule 37 (i_statement)
-
-
-State 77
-
-   33 e_statement: FOREACH IDENT . IN IDENT BEGINLOOP statement_ns ENDLOOP
-
-    IN  shift, and go to state 111
 
 
 State 78
@@ -1024,7 +1024,7 @@ State 78
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1049,11 +1049,11 @@ State 80
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     $default  reduce using rule 13 (statement_ns)
@@ -1078,7 +1078,7 @@ State 81
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1102,7 +1102,7 @@ State 83
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     R_PAREN  shift, and go to state 116
     SUB      shift, and go to state 59
 
@@ -1167,11 +1167,11 @@ State 89
     ELSE      shift, and go to state 121
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 122
@@ -1281,7 +1281,7 @@ State 98
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1297,7 +1297,7 @@ State 99
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1312,7 +1312,7 @@ State 100
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1349,7 +1349,7 @@ State 103
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var     go to state 61
@@ -1364,7 +1364,7 @@ State 104
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var     go to state 61
@@ -1379,7 +1379,7 @@ State 105
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var     go to state 61
@@ -1401,11 +1401,11 @@ State 107
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 132
@@ -1431,26 +1431,26 @@ State 108
 
 State 109
 
-   40 var_ns: var COMMA . var_ns
+   33 e_statement: FOREACH IDENT IN . IDENT BEGINLOOP statement_ns ENDLOOP
 
-    IDENT  shift, and go to state 40
-
-    var     go to state 72
-    var_ns  go to state 134
+    IDENT  shift, and go to state 134
 
 
 State 110
 
-   77 upterm: L_PAREN expression . R_PAREN
+   40 var_ns: var COMMA . var_ns
 
-    R_PAREN  shift, and go to state 120
+    IDENT  shift, and go to state 40
+
+    var     go to state 73
+    var_ns  go to state 135
 
 
 State 111
 
-   33 e_statement: FOREACH IDENT IN . IDENT BEGINLOOP statement_ns ENDLOOP
+   77 upterm: L_PAREN expression . R_PAREN
 
-    IDENT  shift, and go to state 135
+    R_PAREN  shift, and go to state 120
 
 
 State 112
@@ -1526,11 +1526,11 @@ State 121
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 140
@@ -1654,16 +1654,16 @@ State 133
 
 State 134
 
-   40 var_ns: var COMMA var_ns .
+   33 e_statement: FOREACH IDENT IN IDENT . BEGINLOOP statement_ns ENDLOOP
 
-    $default  reduce using rule 40 (var_ns)
+    BEGINLOOP  shift, and go to state 147
 
 
 State 135
 
-   33 e_statement: FOREACH IDENT IN IDENT . BEGINLOOP statement_ns ENDLOOP
+   40 var_ns: var COMMA var_ns .
 
-    BEGINLOOP  shift, and go to state 147
+    $default  reduce using rule 40 (var_ns)
 
 
 State 136
@@ -1686,7 +1686,7 @@ State 138
 
     NUMBER   shift, and go to state 56
     IDENT    shift, and go to state 57
-    L_PAREN  shift, and go to state 75
+    L_PAREN  shift, and go to state 76
     SUB      shift, and go to state 59
 
     var                  go to state 61
@@ -1776,11 +1776,11 @@ State 147
     IF        shift, and go to state 32
     WHILE     shift, and go to state 33
     DO        shift, and go to state 34
-    CONTINUE  shift, and go to state 35
-    READ      shift, and go to state 36
-    WRITE     shift, and go to state 37
-    RETURN    shift, and go to state 38
-    FOREACH   shift, and go to state 39
+    FOREACH   shift, and go to state 35
+    CONTINUE  shift, and go to state 36
+    READ      shift, and go to state 37
+    WRITE     shift, and go to state 38
+    RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
     statement_ns  go to state 152
