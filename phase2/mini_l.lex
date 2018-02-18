@@ -1,4 +1,7 @@
-
+/*
+	Raymond Farias 861158225
+	Jonathan Herrera 861239801
+*/
 %{   
 	#include "y.tab.h"
 	int curPos = 1;
