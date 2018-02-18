@@ -63,7 +63,7 @@ Grammar
    39    | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
 
    40 var_ns: var COMMA var_ns
-   41       | var COMMA
+   41       | var
 
    42 bool_expr: relation_and_expr
    43          | relation_and_expr OR bool_expr
@@ -149,7 +149,7 @@ TRUE (279) 49
 FALSE (280) 50
 SEMICOLON (281) 3 10 11 12 13
 COLON (282) 14
-COMMA (283) 15 40 41 81
+COMMA (283) 15 40 81
 ASSIGN (284) 28
 RETURN (285) 37
 FOREACH (286) 33
@@ -967,9 +967,11 @@ State 71
 State 72
 
    40 var_ns: var . COMMA var_ns
-   41       | var . COMMA
+   41       | var .
 
     COMMA  shift, and go to state 109
+
+    $default  reduce using rule 41 (var_ns)
 
 
 State 73
@@ -1430,11 +1432,8 @@ State 108
 State 109
 
    40 var_ns: var COMMA . var_ns
-   41       | var COMMA .
 
     IDENT  shift, and go to state 40
-
-    $default  reduce using rule 41 (var_ns)
 
     var     go to state 72
     var_ns  go to state 134

@@ -89,57 +89,74 @@ b_statement: 	IF bool_expr THEN statement_ns ENDIF { printf("b_statement -> IF b
 				| IF bool_expr THEN ELSE statement_ns ENDIF { printf("b_statement -> IF bool_expr THEN ELSE statement_ns ENDIF \n"); }
            ;
 
-c_statement: WHILE bool_expr BEGINLOOP statement_ns ENDLOOP
+c_statement: WHILE bool_expr BEGINLOOP statement_ns ENDLOOP { printf("c_statement -> WHILE bool_expr BEGINLOOP statement_ns ENDLOOP \n"); }
            ;
 
-d_statement: DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr
+d_statement: DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr { printf("d_statement -> DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr \n"); }
            ;
 
-e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP
+e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP { printf("e_statement -> FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP \n"); }
            ;
 
-f_statement: READ var_ns
+f_statement: READ var_ns { printf("f_statement -> READ var_ns \n"); }
            ;
 
-g_statement: WRITE var_ns
+g_statement: WRITE var_ns { printf("g_statement -> WRITE var_ns \n"); }
            ;
 
-h_statement: CONTINUE
+h_statement: CONTINUE { printf("h_statement -> CONTINUE \n"); }
            ;
 
-i_statement: RETURN expression
+i_statement: RETURN expression { printf("i_statement -> RETURN expression \n"); }
            ;
 
-var: IDENT | IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+var: 	IDENT { printf("var -> IDENT \n"); } 
+		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET { printf("var -> IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET \n"); }
    ;
 
-var_ns: var COMMA var_ns | var COMMA
+var_ns: var COMMA var_ns { printf("var_ns -> var COMMA var_ns \n"); } 
+		| var { printf("var_ns -> var \n"); }
       ;
 
-bool_expr: relation_and_expr | relation_and_expr OR bool_expr
+bool_expr: relation_and_expr  { printf("bool_expr -> relation_and_expr \n"); }
+			| relation_and_expr OR bool_expr { printf("bool_expr -> relation_and_expr OR bool_expr \n"); }
         ;
 
-relation_and_expr: relation_expr | relation_expr AND relation_and_expr
+relation_and_expr: 	relation_expr { printf("relation_and_expr -> relation_expr \n"); }
+					| relation_expr AND relation_and_expr { printf("relation_and_expr -> relation_expr AND relation_and_expr \n"); }
                  ;
 
-relation_expr: NOT rexpr | rexpr
+relation_expr: 	NOT rexpr { printf("relation_expr -> NOT rexpr \n"); } 
+				| rexpr { printf("relation_expr -> rexpr \n"); }
              ;
 
-rexpr: expression comp expression | TRUE | FALSE | L_PAREN bool_expr R_PAREN
+rexpr: 	expression comp expression { printf("rexpr -> expression comp expression \n"); } 
+		| TRUE { printf("rexpr -> TRUE \n"); } 
+		| FALSE { printf("rexpr -> FALSE \n"); }
+		| L_PAREN bool_expr R_PAREN { printf("rexpr -> L_PAREN bool_expr R_PAREN \n"); }
      ;
 
-comp: EQ | NEQ | LT | GT | LTE | GTE 
+comp:	EQ { printf("comp -> EQ \n"); }
+		| NEQ { printf("comp -> NEQ \n"); }
+		| LT { printf("comp -> LT \n"); }
+		| GT { printf("comp -> GT \n"); }
+		| LTE { printf("comp -> LTE \n"); }
+		| GTE { printf("comp -> GTE \n"); }
     ;
 
-expression: multiplicative_expr exprsum_s | multiplicative_expr
+expression: multiplicative_expr exprsum_s { printf("expression -> multiplicative_expr exprsum_s \n"); } 
+			| multiplicative_expr { printf("expression -> multiplicative_expr \n"); }
           ;
 
-exprsum_s: exprsum exprsum_s | exprsum
+exprsum_s: 	exprsum exprsum_s { printf("exprsum_s -> exprsum exprsum_s \n"); } 
+			| exprsum { printf("exprsum_s -> exprsum \n"); }
          ;
 		 
-exprsum:	ADD multiplicative_expr | SUB multiplicative_expr
+exprsum:	ADD multiplicative_expr { printf("exprsum -> ADD multiplicative_expr \n"); } 
+			| SUB multiplicative_expr { printf("exprsum -> SUB multiplicative_expr \n"); }
 
-multiplicative_expr: term term_s | term
+multiplicative_expr: term term_s { printf("multiplicative_expr -> term term_s \n"); }  
+					| term { printf("multiplicative_expr -> term \n"); } 
                    ;
 			
 term_s: MULT term term_s { printf("term_s -> MULT term term_s \n"); }
