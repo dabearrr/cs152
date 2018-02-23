@@ -59,7 +59,7 @@ declaration_s:	declaration SEMICOLON declaration_s { printf("declaration_s -> de
 				| declaration SEMICOLON { printf("declaration_s -> declaration\n"); }
 				;
 
-statement_ns: 	statement SEMICOLON statement_ns { printf("statement SEMICOLON statement_ns \n"); }
+statement_ns: 	statement SEMICOLON statement_ns { printf("statement_ns -> statement SEMICOLON statement_ns \n"); }
 				| statement SEMICOLON { printf("statement_ns -> statement SEMICOLON \n"); }
             ;
 

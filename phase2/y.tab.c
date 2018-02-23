@@ -1453,7 +1453,7 @@ yyreduce:
 
   case 13:
 #line 62 "mini_l.y" /* yacc.c:1646  */
-    { printf("statement SEMICOLON statement_ns \n"); }
+    { printf("statement_ns -> statement SEMICOLON statement_ns \n"); }
 #line 1458 "y.tab.c" /* yacc.c:1646  */
     break;
 
