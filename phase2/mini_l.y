@@ -7,17 +7,19 @@
 
 	#include <stdio.h>
 	#include <stdlib.h>
-	int yyerror (char* s);
+	int yyerror (const char* s);
 	int yylex(void);
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
 	FILE* inputFile;
-%}
-
-%union {
 	int val;
 	char* op_val;
+%}
+
+%union{
+  int val;
+  char* op_val;
 }
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
@@ -27,7 +29,9 @@
 %token AND OR
 
 %token <val> NUMBER
+/*%type <val> NUMBER*/
 %token <op_val> IDENT
+/*%type <op_val> IDENT */
 
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
 %token MULT DIV MOD ADD SUB
@@ -42,7 +46,7 @@ program:	program function { printf("program -> function program\n"); }
 			| function { printf("program -> function\n"); }
 			;
 			
-function:	FUNCTION IDENT SEMICOLON function_chunk_a function_chunk_b function_chunk_c { printf(" FUNCTION IDENT SEMICOLON function_chunk_a function_chunk_b function_chunk_c \n"); }
+function:	FUNCTION IDENT SEMICOLON function_chunk_a function_chunk_b function_chunk_c { printf("function -> FUNCTION IDENT %s SEMICOLON function_chunk_a function_chunk_b function_chunk_c \n", op_val); }
 			;
 
 function_chunk_a: 	BEGIN_PARAMS declaration_s END_PARAMS { printf("function_chunk_a -> BEGIN_PARAMS declaration_s END_PARAMS \n"); }
@@ -66,12 +70,12 @@ statement_ns: 	statement SEMICOLON statement_ns { printf("statement_ns -> statem
 declaration: identifier_ns COLON arrayint { printf("declaration -> identifier_ns COLON arrayint \n"); }
            ;
 
-identifier_ns: 	IDENT COMMA identifier_ns { printf("identifier_ns -> IDENT COMMA identifier_ns \n"); }
-				| IDENT { printf("identifier_ns -> IDENT \n"); }
+identifier_ns: 	IDENT COMMA identifier_ns { printf("identifier_ns -> IDENT %s COMMA identifier_ns \n", op_val); }
+				| IDENT { printf("identifier_ns -> IDENT %s \n", op_val); }
              ;
 
 arrayint: 	INTEGER { printf("arrayint -> INTEGER \n"); }
-			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER { printf("arrayint -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER \n"); }
+			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER { printf("arrayint -> ARRAY L_SQUARE_BRACKET NUMBER %d R_SQUARE_BRACKET OF INTEGER \n", val); }
         ;
 
 statement: 	a_statement { printf("statement -> a_statement \n"); }
@@ -98,7 +102,7 @@ c_statement: WHILE bool_expr BEGINLOOP statement_ns ENDLOOP { printf("c_statemen
 d_statement: DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr { printf("d_statement -> DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr \n"); }
            ;
 
-e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP { printf("e_statement -> FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP \n"); }
+e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP { printf("e_statement -> FOREACH IDENT %s IN IDENT BEGINLOOP statement_ns ENDLOOP \n", op_val); }
            ;
 
 f_statement: READ var_ns { printf("f_statement -> READ var_ns \n"); }
@@ -113,8 +117,8 @@ h_statement: CONTINUE { printf("h_statement -> CONTINUE \n"); }
 i_statement: RETURN expression { printf("i_statement -> RETURN expression \n"); }
            ;
 
-var: 	IDENT { printf("var -> IDENT \n"); } 
-		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET { printf("var -> IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET \n"); }
+var: 	IDENT { printf("var -> IDENT %s \n", op_val); } 
+		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET { printf("var -> IDENT %s L_SQUARE_BRACKET expression R_SQUARE_BRACKET \n", op_val); }
    ;
 
 var_ns: var COMMA var_ns { printf("var_ns -> var COMMA var_ns \n"); } 
@@ -172,11 +176,11 @@ term_s: MULT term term_s { printf("term_s -> MULT term term_s \n"); }
 
 term: 	upterm { printf("term -> upterm \n"); }
 		| SUB upterm { printf("term -> SUB upterm \n"); }
-		| IDENT termidentifier { printf("term -> IDENT termidentifier \n"); }
+		| IDENT termidentifier { printf("term -> IDENT %s termidentifier \n", op_val); }
     ;
 
 upterm: var { printf("upterm -> var \n"); }
-		| NUMBER { printf("upterm -> NUMBER \n"); }
+		| NUMBER { printf("upterm -> NUMBER %d \n", val); }
 		| L_PAREN expression R_PAREN { printf("upterm -> L_PAREN expression R_PAREN \n"); }
       ;
 
@@ -205,8 +209,9 @@ int main(int argc, char ** argv) {
   return 0;
 }
 
-int yyerror(char* s) {
+int yyerror(const char* s) {
   printf("Error at line %d, column %d: Error at \"%s\" \n", curLine, curPos, s);
   exit(1);
+  return 0;
 }
 

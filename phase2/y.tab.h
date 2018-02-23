@@ -103,10 +103,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 18 "mini_l.y" /* yacc.c:1909  */
+#line 20 "mini_l.y" /* yacc.c:1909  */
 
-	int val;
-	char* op_val;
+  int val;
+  char* op_val;
 
 #line 112 "y.tab.h" /* yacc.c:1909  */
 };
