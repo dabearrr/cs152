@@ -1123,7 +1123,7 @@ YY_RULE_SETUP
 case 54:
 YY_RULE_SETUP
 #line 73 "mini_l.lex"
-{op_val = yytext; return IDENT;}
+{op_val = strdup(yytext); /*op_val[strlen(op_val)-1] = '\0';*/ return IDENT;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
