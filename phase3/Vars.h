@@ -1,10 +1,12 @@
  #pragma once
  #include <string>
  #include <sstream>
+
+using namespace std;
  
- class Code {
+ class Vars {
 	public:
-	Code() {
+	Vars() {
 		counter = 1;
 	}
 	string getTemp() {
