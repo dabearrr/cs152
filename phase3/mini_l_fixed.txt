@@ -15,6 +15,7 @@
 	FILE* inputFile;
 	int val;
 	char* op_val;
+	MilCode milCode;
 %}
 
 %union{
