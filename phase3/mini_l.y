@@ -4,7 +4,13 @@
 */
 %{
 	#define YY_NO_UNPUT
-
+	#include "Vars.h"
+	#include "MilCode.h"
+	#include "SymbolTable.h"
+	
+	#include <iostream>
+	#include <fstream>
+	#include <vector>
 	#include <stdio.h>
 	#include <stdlib.h>
 	int yyerror (const char* s);
@@ -15,6 +21,8 @@
 	FILE* inputFile;
 	int val;
 	char* op_val;
+	
+	vector<string> codeToWrite;
 %}
 
 %union{
@@ -32,6 +40,7 @@
 /*%type <val> NUMBER*/
 %token <op_val> IDENT
 /*%type <op_val> IDENT */
+%type <val> INTEGER
 
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
 %token MULT DIV MOD ADD SUB
@@ -74,8 +83,8 @@ identifier_ns: 	IDENT COMMA identifier_ns {}
 				| IDENT {}
              ;
 
-arrayint: 	INTEGER {}
-			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
+arrayint: 	INTEGER { cout << "Integer" << $1;}
+			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {cout << "array" << $3;}
         ;
 
 statement: 	a_statement {}

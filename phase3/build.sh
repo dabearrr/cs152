@@ -9,5 +9,5 @@ flex mini_l.lex
 
 sleep 0.1s
 
-gcc -o parser y.tab.c lex.yy.c -lfl
+g++ -std=c++11 -o parser y.tab.c lex.yy.c -lfl
 

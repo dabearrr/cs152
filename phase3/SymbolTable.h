@@ -1,4 +1,6 @@
+#pragma once
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -8,8 +10,8 @@ class SymbolTable {
 		
 	}
 	bool contains(string s) {
-		unordered_set::const_iterator it = symbol.find(s);
-		if (it == symbol.end()) {
+		auto it = symbols.find(s);
+		if (it == symbols.end()) {
 			return false;
 		} else {
 			return true;
@@ -20,4 +22,4 @@ class SymbolTable {
 	}
 	private:
 	unordered_set<string> symbols;
-}
+};
