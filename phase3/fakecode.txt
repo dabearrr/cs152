@@ -1,0 +1,9 @@
+function fibonacci;
+beginparams
+	k : integer;
+endparams
+beginlocals
+endlocals
+beginbody
+	k := 3;
+endbody

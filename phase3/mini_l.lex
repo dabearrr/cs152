@@ -3,11 +3,23 @@
 	Jonathan Herrera 861239801
 */
 %{   
+	#include <string>
+	#include "Attribute.h"
 	#include "y.tab.h"
+	#include "Vars.h"
+	#include "MilCode.h"
+	#include "SymbolTable.h"
+	
+	#include <iostream>
+	#include <fstream>
+	#include <vector>
+	#include <stdio.h>
+	#include <stdlib.h>
 	int curPos = 1;
 	int curLine = 1;
 	extern int val;
 	extern char* op_val;
+	extern Attribute* attr;
 %}
 	
 digit		[0-9]
@@ -69,8 +81,8 @@ badidb		{ident}_+
 " "		{curPos += yyleng;}
 "	"	{curPos += yyleng;}
 "##".*	{curPos += yyleng;}
-{number}	{val = atof(yytext); return NUMBER;}
-{ident}	{op_val = strdup(yytext); /*op_val[strlen(op_val)-1] = '\0';*/ return IDENT;}
+{number}	{val = atoi(strdup(yytext)); string s(yytext); cout << s << endl; stringstream ss(s); int temp; ss >> temp; *(yylval.val) = temp; return NUMBER;}
+{ident}	{op_val = strdup(yytext); yylval.op_val = strdup(yytext); /*op_val[strlen(op_val)-1] = '\0';*/ return IDENT;}
 {badida}	{printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 {badidb}	{printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 .	{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}

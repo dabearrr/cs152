@@ -1,0 +1,108 @@
+identifier_ns -> IDENT k 
+arrayint -> INTEGER 
+declaration -> identifier_ns COLON arrayint 
+declaration_s -> declaration
+function_chunk_a -> BEGIN_PARAMS declaration_s END_PARAMS 
+function_chunk_b -> BEGIN_LOCALS END_LOCALS
+var -> IDENT k 
+upterm -> var 
+term -> upterm 
+multiplicative_expr -> term 
+expression -> multiplicative_expr 
+comp -> LTE 
+upterm -> NUMBER 1 
+term -> upterm 
+multiplicative_expr -> term 
+expression -> multiplicative_expr 
+rexpr -> expression comp expression 
+relation_expr -> rexpr 
+relation_and_expr -> relation_expr 
+bool_expr -> relation_and_expr 
+rexpr -> L_PAREN bool_expr R_PAREN 
+relation_expr -> rexpr 
+relation_and_expr -> relation_expr 
+bool_expr -> relation_and_expr 
+upterm -> NUMBER 1 
+term -> upterm 
+multiplicative_expr -> term 
+expression -> multiplicative_expr 
+i_statement -> RETURN expression 
+statement -> i_statement 
+statement_ns -> statement SEMICOLON 
+b_statement -> IF bool_expr THEN statement_ns ENDIF 
+statement -> b_statement 
+var -> IDENT k 
+upterm -> var 
+term -> upterm 
+multiplicative_expr -> term 
+upterm -> NUMBER 1 
+term -> upterm 
+multiplicative_expr -> term 
+exprsum -> SUB multiplicative_expr 
+exprsum_s -> exprsum 
+expression -> multiplicative_expr exprsum_s 
+termexpression -> expression 
+termidentifier -> L_PAREN termexpression R_PAREN 
+term -> IDENT k termidentifier 
+multiplicative_expr -> term 
+var -> IDENT k 
+upterm -> var 
+term -> upterm 
+multiplicative_expr -> term 
+upterm -> NUMBER 2 
+term -> upterm 
+multiplicative_expr -> term 
+exprsum -> SUB multiplicative_expr 
+exprsum_s -> exprsum 
+expression -> multiplicative_expr exprsum_s 
+termexpression -> expression 
+termidentifier -> L_PAREN termexpression R_PAREN 
+term -> IDENT k termidentifier 
+multiplicative_expr -> term 
+exprsum -> ADD multiplicative_expr 
+exprsum_s -> exprsum 
+expression -> multiplicative_expr exprsum_s 
+i_statement -> RETURN expression 
+statement -> i_statement 
+statement_ns -> statement SEMICOLON 
+statement_ns -> statement SEMICOLON statement_ns 
+function_chunk_c -> BEGIN_BODY statement_ns END_BODY 
+function -> FUNCTION IDENT k SEMICOLON function_chunk_a function_chunk_b function_chunk_c 
+program -> function
+function_chunk_a -> BEGIN_PARAMS END_PARAMS 
+identifier_ns -> IDENT n 
+arrayint -> INTEGER 
+declaration -> identifier_ns COLON arrayint 
+identifier_ns -> IDENT fib_n 
+arrayint -> INTEGER 
+declaration -> identifier_ns COLON arrayint 
+declaration_s -> declaration
+declaration_s -> declaration semicolon declaration_s 
+function_chunk_b -> BEGIN_LOCALS declaration_s END_LOCALS
+var -> IDENT n 
+var_ns -> var 
+f_statement -> READ var_ns 
+statement -> f_statement 
+var -> IDENT fib_n 
+var -> IDENT n 
+upterm -> var 
+term -> upterm 
+multiplicative_expr -> term 
+expression -> multiplicative_expr 
+termexpression -> expression 
+termidentifier -> L_PAREN termexpression R_PAREN 
+term -> IDENT n termidentifier 
+multiplicative_expr -> term 
+expression -> multiplicative_expr 
+a_statement -> var ASSIGN expression 
+statement -> a_statement 
+var -> IDENT fib_n 
+var_ns -> var 
+g_statement -> WRITE var_ns 
+statement -> g_statement 
+statement_ns -> statement SEMICOLON 
+statement_ns -> statement SEMICOLON statement_ns 
+statement_ns -> statement SEMICOLON statement_ns 
+function_chunk_c -> BEGIN_BODY statement_ns END_BODY 
+function -> FUNCTION IDENT fib_n SEMICOLON function_chunk_a function_chunk_b function_chunk_c 
+program -> function program

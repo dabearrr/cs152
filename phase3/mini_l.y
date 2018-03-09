@@ -7,14 +7,20 @@
 	#include "Vars.h"
 	#include "MilCode.h"
 	#include "SymbolTable.h"
+	#include "Attribute.h"
 	
 	#include <iostream>
 	#include <fstream>
 	#include <vector>
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <string>
+	
+	using namespace std;
+	
 	int yyerror (const char* s);
 	int yylex(void);
+	string intToString(int x);
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -23,11 +29,16 @@
 	char* op_val;
 	
 	vector<string> codeToWrite;
+	MilCode mc;
+	
+	int IDENT_TYPE = 1;
+	int INTEGER_TYPE = 2;
 %}
 
 %union{
-  int val;
+  int* val;
   char* op_val;
+  Attribute* attr;
 }
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
@@ -36,11 +47,10 @@
 %token ASSIGN RETURN
 %token AND OR
 
-%token <val> NUMBER
-/*%type <val> NUMBER*/
+%token <attr> NUMBER
 %token <op_val> IDENT
-/*%type <op_val> IDENT */
-%type <val> INTEGER
+%type <val> INTEGER 
+%type <attr> identifier_ns
 
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
 %token MULT DIV MOD ADD SUB
@@ -76,16 +86,15 @@ statement_ns: 	statement SEMICOLON statement_ns {}
 				| statement SEMICOLON {}
             ;
 
-declaration: identifier_ns COLON arrayint {}
+declaration: identifier_ns COLON INTEGER {cout << "INTEGER IS " << *$3 << mc.varName($1->name) << endl << mc.copyElement($1->name, intToString(*$3)); }
+			| identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
            ;
 
 identifier_ns: 	IDENT COMMA identifier_ns {}
-				| IDENT {}
+				| IDENT {$$ = new Attribute();
+							string s($1);
+							$$->name = s;}
              ;
-
-arrayint: 	INTEGER { cout << "Integer" << $1;}
-			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {cout << "array" << $3;}
-        ;
 
 statement: 	a_statement {}
 			| b_statement {}
@@ -222,5 +231,11 @@ int yyerror(const char* s) {
   printf("Error at line %d, column %d: Error at \"%s\" \n", curLine, curPos, s);
   exit(1);
   return 0;
+}
+
+string intToString(int x) {
+	stringstream ss;
+	ss << x;
+	return ss.str();
 }
 

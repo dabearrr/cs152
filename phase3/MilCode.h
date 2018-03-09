@@ -16,7 +16,7 @@ class MilCode {
 	}
 
 	string ret(string src) {
-        return ("ret" + src)
+        return ("ret" + src);
 	}
 
 	// Variable Declaration Statements
@@ -24,22 +24,25 @@ class MilCode {
 	    return (". " + name);
 	}
 
-	string arrayName(string namem, int n) {
-	    return (".[] " + ", " + n);
+	string arrayName(string name, int n) {
+		stringstream ss;
+		ss << n;
+		
+	    return (".[] " + name + ", " + ss.str());
 	}
 
 	// Copy Statements
 	string copyElement(string dst, string src) {
-        return ("= ", + dst + ", " + src);
+        return ("= " + dst + ", " + src);
 	}
 
 	// Array Access Statements
 	string arrayAccessAssignFrom(string dst, string src, string index) {
-	    return ("=[] ", + dst, ", " + src ", " + index);
+	    return ("=[] " + dst + ", " + src + ", " + index);
 	}
 
 	string arrayAccessAssignTo(string dst, string index, string src) {
-	    return ("[]=" + dst + ", " + index ", " + src );
+	    return ("[]= " + dst + ", " + index + ", " + src );
 	}
 
 	// Input/Output Statements
@@ -48,7 +51,7 @@ class MilCode {
 	}
 
 	string readIntoDestArray(string dst, string index) {
-	    return (".[]< " + dst ", " + index);
+	    return (".[]< " + dst + ", " + index);
 	}
 
 	string writeSourceToOut(string src) {
@@ -61,12 +64,12 @@ class MilCode {
 
 	// Arithmetic Operator Statements (one or both source operands can be immediates)
 	string arithmatic(string sign, string dst, string src1, string src2) {
-	    return (sign + " " + dst + ", " + src1 ", " + src2);
+	    return (sign + " " + dst + ", " + src1 + ", " + src2);
 	}
 
 	// Comparison Operator Statements (one or both source operands can be immediates)
 	string comparison(string comp, string dst, string src1, string src2) {
-	    return (comp + " " + dst + ", " + src1 + ", " src2);
+	    return (comp + " " + dst + ", " + src1 + ", " + src2);
 	}
 
 	// Logical Operator Statements (one or both source operands can be immediates)

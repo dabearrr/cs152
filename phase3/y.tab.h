@@ -103,12 +103,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 28 "mini_l.y" /* yacc.c:1909  */
+#line 38 "mini_l.y" /* yacc.c:1909  */
 
-  int val;
+  int* val;
   char* op_val;
+  Attribute* attr;
 
-#line 112 "y.tab.h" /* yacc.c:1909  */
+#line 113 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
