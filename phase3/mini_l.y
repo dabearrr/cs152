@@ -21,6 +21,7 @@
 	int yyerror (const char* s);
 	int yylex(void);
 	string intToString(int x);
+	void printCode();
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -36,7 +37,7 @@
 %}
 
 %union{
-  int* val;
+  int val;
   char* op_val;
   Attribute* attr;
 }
@@ -86,7 +87,7 @@ statement_ns: 	statement SEMICOLON statement_ns {}
 				| statement SEMICOLON {}
             ;
 
-declaration: identifier_ns COLON INTEGER {cout << "INTEGER IS " << *$3 << mc.varName($1->name) << endl << mc.copyElement($1->name, intToString(*$3)); }
+declaration: identifier_ns COLON INTEGER {codeToWrite.push_back(mc.varName($1->name)); codeToWrite.push_back(mc.copyElement($1->name, "$0")); }
 			| identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
            ;
 
@@ -223,6 +224,8 @@ int main(int argc, char ** argv) {
    }
    
    yyparse();
+   
+   printCode();
   
   return 0;
 }
@@ -237,5 +240,12 @@ string intToString(int x) {
 	stringstream ss;
 	ss << x;
 	return ss.str();
+}
+
+void printCode() {
+	cout << "Code looks like: " << endl;
+	for(int i = 0; i < codeToWrite.size(); i++) {
+		cout << codeToWrite.at(i) << endl;
+	}
 }
 

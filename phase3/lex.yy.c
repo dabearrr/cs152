@@ -1130,7 +1130,7 @@ YY_RULE_SETUP
 case 53:
 YY_RULE_SETUP
 #line 84 "mini_l.lex"
-{val = atoi(strdup(yytext)); string s(yytext); cout << s << endl; stringstream ss(s); int temp; ss >> temp; *(yylval.val) = temp; return NUMBER;}
+{val = atoi(strdup(yytext)); string s(yytext); cout << "number is : " << s << "in flex" << endl; stringstream ss(s); int temp = 0; ss >> temp; yylval.val = temp; return NUMBER;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP

@@ -103,9 +103,9 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 38 "mini_l.y" /* yacc.c:1909  */
+#line 39 "mini_l.y" /* yacc.c:1909  */
 
-  int* val;
+  int val;
   char* op_val;
   Attribute* attr;
 
