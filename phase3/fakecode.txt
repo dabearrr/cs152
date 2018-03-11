@@ -1,7 +1,13 @@
 function fibonacci;
 beginparams
+	l : integer;
+	h,i,j : integer;
 	k : integer;
-	c : integer;
+	a,b,c : integer;
+	d : integer;
+ 	z : array [10] of integer;
+ 	y : array [10] of integer;
+	x, w : array [20] of integer;
 endparams
 beginlocals
 endlocals

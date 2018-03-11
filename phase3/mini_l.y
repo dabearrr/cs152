@@ -8,6 +8,7 @@
 	#include "MilCode.h"
 	#include "SymbolTable.h"
 	#include "Attribute.h"
+	#include "Utils.h"
 	
 	#include <iostream>
 	#include <fstream>
@@ -15,6 +16,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string>
+	#include <typeinfo>
 	
 	using namespace std;
 	
@@ -22,6 +24,10 @@
 	int yylex(void);
 	string intToString(int x);
 	void printCode();
+	string charToString(char*);
+	void p(string);
+	
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -29,11 +35,14 @@
 	int val;
 	char* op_val;
 	
+	int testCounter = 0;
 	vector<string> codeToWrite;
 	MilCode mc;
+	Utils utils;
 	
 	int IDENT_TYPE = 1;
-	int INTEGER_TYPE = 2;
+	int IDENT_LIST_TYPE = 2;
+	int INTEGER_TYPE = 3;
 %}
 
 %union{
@@ -48,9 +57,8 @@
 %token ASSIGN RETURN
 %token AND OR
 
-%token <attr> NUMBER
+%token <val> NUMBER
 %token <op_val> IDENT
-%type <val> INTEGER 
 %type <attr> identifier_ns
 
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
@@ -87,14 +95,37 @@ statement_ns: 	statement SEMICOLON statement_ns {}
 				| statement SEMICOLON {}
             ;
 
-declaration: identifier_ns COLON INTEGER {codeToWrite.push_back(mc.varName($1->name)); codeToWrite.push_back(mc.copyElement($1->name, "$0")); }
-			| identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
+declaration: identifier_ns COLON INTEGER {
+		p("declaration integer, may want to reverse order"  + $1->toString());
+		for(int i = 0; i < $1->list.size(); i++) {
+			codeToWrite.push_back(mc.varName($1->list.at(i))); 
+			codeToWrite.push_back(mc.copyElement($1->list.at(i), "$0")); 
+		}
+}
+			| identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
+		p("declaration array, may want to reverse order: " + $1->toString());
+		p("the array size is: " + utils.intToString($5));
+		for(int i = 0; i < $1->list.size(); i++) {
+			codeToWrite.push_back(mc.arrayName($1->list.at(i), utils.intToString($5))); 
+		}
+}
            ;
 
-identifier_ns: 	IDENT COMMA identifier_ns {}
-				| IDENT {$$ = new Attribute();
-							string s($1);
-							$$->name = s;}
+identifier_ns: 	IDENT COMMA identifier_ns {
+	p("identifier_ns new list: " + utils.charToString($1));
+	p("identifier_ns checking the sub identifier_ns " + $3->toString());
+	$$ = $3;
+	$$->list.push_back(utils.charToString($1));
+	$$->type = IDENT_LIST_TYPE;
+	p("identifier_ns copied sub identifier_ns, should have two or more now " + $$->toString());
+}
+				| IDENT {
+	p("identifier_ns -> IDENT: " + utils.charToString($1));
+	$$ = new Attribute();
+	$$->name = "IDENT LIST";
+	$$->type = IDENT_TYPE;
+	$$->list.push_back($1);
+}
              ;
 
 statement: 	a_statement {}
@@ -223,9 +254,11 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
+   p("before yyparse");
    yyparse();
+   p("after yyparse");
    
-   printCode();
+   utils.printCode(codeToWrite);
   
   return 0;
 }
@@ -236,10 +269,8 @@ int yyerror(const char* s) {
   return 0;
 }
 
-string intToString(int x) {
-	stringstream ss;
-	ss << x;
-	return ss.str();
+void p(string log) {
+	cout << "Logger #" << testCounter++ << " " << log << endl;
 }
 
 void printCode() {
@@ -248,4 +279,3 @@ void printCode() {
 		cout << codeToWrite.at(i) << endl;
 	}
 }
-

@@ -4,23 +4,51 @@
 */
 %{
 	#define YY_NO_UNPUT
-
+	#include "Vars.h"
+	#include "MilCode.h"
+	#include "SymbolTable.h"
+	#include "Attribute.h"
+	#include "Utils.h"
+	
+	#include <iostream>
+	#include <fstream>
+	#include <vector>
 	#include <stdio.h>
 	#include <stdlib.h>
+	#include <string>
+	#include <typeinfo>
+	
+	using namespace std;
+	
 	int yyerror (const char* s);
 	int yylex(void);
+	string intToString(int x);
+	void printCode();
+	string charToString(char*);
+	void p(string);
+	
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
 	FILE* inputFile;
 	int val;
 	char* op_val;
-	MilCode milCode;
+	
+	int testCounter = 0;
+	vector<string> codeToWrite;
+	MilCode mc;
+	Utils utils;
+	
+	int IDENT_TYPE = 1;
+	int IDENT_LIST_TYPE = 2;
+	int INTEGER_TYPE = 3;
 %}
 
 %union{
   int val;
   char* op_val;
+  Attribute* attr;
 }
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY 
@@ -29,10 +57,10 @@
 %token ASSIGN RETURN
 %token AND OR
 
-%token <val> NUMBER
-/*%type <val> NUMBER*/
+%token <attr> NUMBER
 %token <op_val> IDENT
-/*%type <op_val> IDENT */
+%type <val> INTEGER 
+%type <attr> identifier_ns
 
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
 %token MULT DIV MOD ADD SUB
@@ -68,16 +96,57 @@ statement_ns: 	statement SEMICOLON statement_ns {}
 				| statement SEMICOLON {}
             ;
 
-declaration: identifier_ns COLON arrayint {}
+declaration: identifier_ns COLON INTEGER {
+	p("declaration before type check");
+	if($1->type == IDENT_LIST_TYPE) {
+		p("declaration list confirmed");
+		for(int i = 0; i < $1->list.size(); i++) {
+			codeToWrite.push_back(mc.varName($1->list.at(i))); 
+			codeToWrite.push_back(mc.copyElement($1->list.at(i), "$0")); 
+		}
+	} else {
+		p("declaration single");
+		codeToWrite.push_back(mc.varName($1->name)); 
+		codeToWrite.push_back(mc.copyElement($1->name, "$0")); 
+	}
+}
+			| identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
            ;
 
-identifier_ns: 	IDENT COMMA identifier_ns {}
-				| IDENT {}
+identifier_ns: 	IDENT COMMA identifier_ns {
+	p("identifier_ns before checks");
+	if(!$$->list.empty()) {
+		p("identifier_ns adding to list THIS SHOULD NEVER HAPPEN");
+		$$->list.push_back(utils.charToString($1));
+	}
+	else {
+		p("identifier_ns new list: " + utils.charToString($1));
+		p("identifier_ns checking the sub identifier_ns " + $3->toString());
+		$$ = $3;
+		$$->list.push_back(utils.charToString($1));
+		$$->type = IDENT_LIST_TYPE;
+		p("identifier_ns copied sub identifier_ns, should have two or more now " + $$->toString());
+	}
+}
+				| IDENT {
+	if(!$$->list.empty()) {
+		p("typeid for $$ is: ");
+		cout << typeid($$).name() << " " << typeid(*$$).name() << endl;
+		p("identifier_ns list done");
+		p("checking chartostring: " + utils.charToString($1));
+		p("$$ has: " + $$->toString());
+		$$->list.push_back(utils.charToString($1));
+		p("identifier_ns list done DONE");
+	}
+	else {
+		p("identifier_ns only one: " + utils.charToString($1));
+		$$ = new Attribute();
+		$$->name = utils.charToString($1);
+		$$->type = IDENT_TYPE;
+		$$->list.push_back($1);
+	}
+}
              ;
-
-arrayint: 	INTEGER {}
-			| ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {}
-        ;
 
 statement: 	a_statement {}
 			| b_statement {}
@@ -205,7 +274,11 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
+   p("before yyparse");
    yyparse();
+   p("after yyparse");
+   
+   utils.printCode(codeToWrite);
   
   return 0;
 }
@@ -216,3 +289,13 @@ int yyerror(const char* s) {
   return 0;
 }
 
+void p(string log) {
+	cout << "Logger #" << testCounter++ << " " << log << endl;
+}
+
+void printCode() {
+	cout << "Code looks like: " << endl;
+	for(int i = 0; i < codeToWrite.size(); i++) {
+		cout << codeToWrite.at(i) << endl;
+	}
+}

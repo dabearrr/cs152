@@ -23,6 +23,12 @@ class MilCode {
 	string varName(string name) {
 	    return (". " + name);
 	}
+	
+	string arrayName(string name, string n) {
+		stringstream ss;
+		
+	    return (".[] " + name + ", " + n);
+	}
 
 	string arrayName(string name, int n) {
 		stringstream ss;

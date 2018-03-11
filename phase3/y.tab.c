@@ -69,6 +69,7 @@
 	#include "MilCode.h"
 	#include "SymbolTable.h"
 	#include "Attribute.h"
+	#include "Utils.h"
 	
 	#include <iostream>
 	#include <fstream>
@@ -76,6 +77,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string>
+	#include <typeinfo>
 	
 	using namespace std;
 	
@@ -83,6 +85,10 @@
 	int yylex(void);
 	string intToString(int x);
 	void printCode();
+	string charToString(char*);
+	void p(string);
+	
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -90,13 +96,16 @@
 	int val;
 	char* op_val;
 	
+	int testCounter = 0;
 	vector<string> codeToWrite;
 	MilCode mc;
+	Utils utils;
 	
 	int IDENT_TYPE = 1;
-	int INTEGER_TYPE = 2;
+	int IDENT_LIST_TYPE = 2;
+	int INTEGER_TYPE = 3;
 
-#line 100 "y.tab.c" /* yacc.c:339  */
+#line 109 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -189,13 +198,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 39 "mini_l.y" /* yacc.c:355  */
+#line 48 "mini_l.y" /* yacc.c:355  */
 
   int val;
   char* op_val;
   Attribute* attr;
 
-#line 199 "y.tab.c" /* yacc.c:355  */
+#line 208 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -212,7 +221,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 216 "y.tab.c" /* yacc.c:358  */
+#line 225 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -514,15 +523,15 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    65,    65,    66,    69,    72,    73,    75,    76,    78,
-      79,    82,    83,    86,    87,    90,    91,    94,    95,   100,
-     101,   102,   103,   104,   105,   106,   107,   108,   111,   114,
-     115,   118,   121,   124,   127,   130,   133,   136,   139,   140,
-     143,   144,   147,   148,   151,   152,   155,   156,   159,   160,
-     161,   162,   165,   166,   167,   168,   169,   170,   173,   174,
-     177,   178,   181,   182,   184,   185,   188,   189,   190,   191,
-     192,   193,   196,   197,   198,   201,   202,   203,   206,   207,
-     210,   211
+       0,    73,    73,    74,    77,    80,    81,    83,    84,    86,
+      87,    90,    91,    94,    95,    98,   105,   114,   122,   131,
+     132,   133,   134,   135,   136,   137,   138,   139,   142,   145,
+     146,   149,   152,   155,   158,   161,   164,   167,   170,   171,
+     174,   175,   178,   179,   182,   183,   186,   187,   190,   191,
+     192,   193,   196,   197,   198,   199,   200,   201,   204,   205,
+     208,   209,   212,   213,   215,   216,   219,   220,   221,   222,
+     223,   224,   227,   228,   229,   232,   233,   234,   237,   238,
+     241,   242
 };
 #endif
 
@@ -1408,489 +1417,512 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 65 "mini_l.y" /* yacc.c:1646  */
+#line 73 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1414 "y.tab.c" /* yacc.c:1646  */
+#line 1423 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 66 "mini_l.y" /* yacc.c:1646  */
+#line 74 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1420 "y.tab.c" /* yacc.c:1646  */
+#line 1429 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 69 "mini_l.y" /* yacc.c:1646  */
+#line 77 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1426 "y.tab.c" /* yacc.c:1646  */
+#line 1435 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 72 "mini_l.y" /* yacc.c:1646  */
+#line 80 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1432 "y.tab.c" /* yacc.c:1646  */
+#line 1441 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 73 "mini_l.y" /* yacc.c:1646  */
+#line 81 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1438 "y.tab.c" /* yacc.c:1646  */
+#line 1447 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 75 "mini_l.y" /* yacc.c:1646  */
+#line 83 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1444 "y.tab.c" /* yacc.c:1646  */
+#line 1453 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 76 "mini_l.y" /* yacc.c:1646  */
+#line 84 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1450 "y.tab.c" /* yacc.c:1646  */
+#line 1459 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 78 "mini_l.y" /* yacc.c:1646  */
+#line 86 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1456 "y.tab.c" /* yacc.c:1646  */
+#line 1465 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 79 "mini_l.y" /* yacc.c:1646  */
+#line 87 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1462 "y.tab.c" /* yacc.c:1646  */
+#line 1471 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 82 "mini_l.y" /* yacc.c:1646  */
+#line 90 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1468 "y.tab.c" /* yacc.c:1646  */
+#line 1477 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 83 "mini_l.y" /* yacc.c:1646  */
+#line 91 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1474 "y.tab.c" /* yacc.c:1646  */
+#line 1483 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 86 "mini_l.y" /* yacc.c:1646  */
+#line 94 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1480 "y.tab.c" /* yacc.c:1646  */
+#line 1489 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 87 "mini_l.y" /* yacc.c:1646  */
+#line 95 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1486 "y.tab.c" /* yacc.c:1646  */
+#line 1495 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 90 "mini_l.y" /* yacc.c:1646  */
-    {codeToWrite.push_back(mc.varName((yyvsp[-2].attr)->name)); codeToWrite.push_back(mc.copyElement((yyvsp[-2].attr)->name, "$0")); }
-#line 1492 "y.tab.c" /* yacc.c:1646  */
+#line 98 "mini_l.y" /* yacc.c:1646  */
+    {
+		p("declaration integer, may want to reverse order"  + (yyvsp[-2].attr)->toString());
+		for(int i = 0; i < (yyvsp[-2].attr)->list.size(); i++) {
+			codeToWrite.push_back(mc.varName((yyvsp[-2].attr)->list.at(i))); 
+			codeToWrite.push_back(mc.copyElement((yyvsp[-2].attr)->list.at(i), "$0")); 
+		}
+}
+#line 1507 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 91 "mini_l.y" /* yacc.c:1646  */
-    {}
-#line 1498 "y.tab.c" /* yacc.c:1646  */
+#line 105 "mini_l.y" /* yacc.c:1646  */
+    {
+		p("declaration array, may want to reverse order: " + (yyvsp[-7].attr)->toString());
+		p("the array size is: " + utils.intToString((yyvsp[-3].val)));
+		for(int i = 0; i < (yyvsp[-7].attr)->list.size(); i++) {
+			codeToWrite.push_back(mc.arrayName((yyvsp[-7].attr)->list.at(i), utils.intToString((yyvsp[-3].val)))); 
+		}
+}
+#line 1519 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 94 "mini_l.y" /* yacc.c:1646  */
-    {}
-#line 1504 "y.tab.c" /* yacc.c:1646  */
+#line 114 "mini_l.y" /* yacc.c:1646  */
+    {
+	p("identifier_ns new list: " + utils.charToString((yyvsp[-2].op_val)));
+	p("identifier_ns checking the sub identifier_ns " + (yyvsp[0].attr)->toString());
+	(yyval.attr) = (yyvsp[0].attr);
+	(yyval.attr)->list.push_back(utils.charToString((yyvsp[-2].op_val)));
+	(yyval.attr)->type = IDENT_LIST_TYPE;
+	p("identifier_ns copied sub identifier_ns, should have two or more now " + (yyval.attr)->toString());
+}
+#line 1532 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 95 "mini_l.y" /* yacc.c:1646  */
-    {(yyval.attr) = new Attribute();
-							string s((yyvsp[0].op_val));
-							(yyval.attr)->name = s;}
-#line 1512 "y.tab.c" /* yacc.c:1646  */
+#line 122 "mini_l.y" /* yacc.c:1646  */
+    {
+	p("identifier_ns -> IDENT: " + utils.charToString((yyvsp[0].op_val)));
+	(yyval.attr) = new Attribute();
+	(yyval.attr)->name = "IDENT LIST";
+	(yyval.attr)->type = IDENT_TYPE;
+	(yyval.attr)->list.push_back((yyvsp[0].op_val));
+}
+#line 1544 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 100 "mini_l.y" /* yacc.c:1646  */
+#line 131 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1518 "y.tab.c" /* yacc.c:1646  */
+#line 1550 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 101 "mini_l.y" /* yacc.c:1646  */
+#line 132 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1524 "y.tab.c" /* yacc.c:1646  */
+#line 1556 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 102 "mini_l.y" /* yacc.c:1646  */
+#line 133 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1530 "y.tab.c" /* yacc.c:1646  */
+#line 1562 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 103 "mini_l.y" /* yacc.c:1646  */
+#line 134 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1536 "y.tab.c" /* yacc.c:1646  */
+#line 1568 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 104 "mini_l.y" /* yacc.c:1646  */
+#line 135 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1542 "y.tab.c" /* yacc.c:1646  */
+#line 1574 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 105 "mini_l.y" /* yacc.c:1646  */
+#line 136 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1548 "y.tab.c" /* yacc.c:1646  */
+#line 1580 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 106 "mini_l.y" /* yacc.c:1646  */
+#line 137 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1554 "y.tab.c" /* yacc.c:1646  */
+#line 1586 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 107 "mini_l.y" /* yacc.c:1646  */
+#line 138 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1560 "y.tab.c" /* yacc.c:1646  */
+#line 1592 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 108 "mini_l.y" /* yacc.c:1646  */
+#line 139 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1566 "y.tab.c" /* yacc.c:1646  */
+#line 1598 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 111 "mini_l.y" /* yacc.c:1646  */
+#line 142 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1572 "y.tab.c" /* yacc.c:1646  */
+#line 1604 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 114 "mini_l.y" /* yacc.c:1646  */
+#line 145 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1578 "y.tab.c" /* yacc.c:1646  */
+#line 1610 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 115 "mini_l.y" /* yacc.c:1646  */
+#line 146 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1584 "y.tab.c" /* yacc.c:1646  */
+#line 1616 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 118 "mini_l.y" /* yacc.c:1646  */
+#line 149 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1590 "y.tab.c" /* yacc.c:1646  */
+#line 1622 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 121 "mini_l.y" /* yacc.c:1646  */
+#line 152 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1596 "y.tab.c" /* yacc.c:1646  */
+#line 1628 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 124 "mini_l.y" /* yacc.c:1646  */
+#line 155 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1602 "y.tab.c" /* yacc.c:1646  */
+#line 1634 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 127 "mini_l.y" /* yacc.c:1646  */
+#line 158 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1608 "y.tab.c" /* yacc.c:1646  */
+#line 1640 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 130 "mini_l.y" /* yacc.c:1646  */
+#line 161 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1614 "y.tab.c" /* yacc.c:1646  */
+#line 1646 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 133 "mini_l.y" /* yacc.c:1646  */
+#line 164 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1620 "y.tab.c" /* yacc.c:1646  */
+#line 1652 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 136 "mini_l.y" /* yacc.c:1646  */
+#line 167 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1626 "y.tab.c" /* yacc.c:1646  */
+#line 1658 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 139 "mini_l.y" /* yacc.c:1646  */
+#line 170 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1632 "y.tab.c" /* yacc.c:1646  */
+#line 1664 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 140 "mini_l.y" /* yacc.c:1646  */
+#line 171 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1638 "y.tab.c" /* yacc.c:1646  */
+#line 1670 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 143 "mini_l.y" /* yacc.c:1646  */
+#line 174 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1644 "y.tab.c" /* yacc.c:1646  */
+#line 1676 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 144 "mini_l.y" /* yacc.c:1646  */
+#line 175 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1650 "y.tab.c" /* yacc.c:1646  */
+#line 1682 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 147 "mini_l.y" /* yacc.c:1646  */
+#line 178 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1656 "y.tab.c" /* yacc.c:1646  */
+#line 1688 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 148 "mini_l.y" /* yacc.c:1646  */
+#line 179 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1662 "y.tab.c" /* yacc.c:1646  */
+#line 1694 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 151 "mini_l.y" /* yacc.c:1646  */
+#line 182 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1668 "y.tab.c" /* yacc.c:1646  */
+#line 1700 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 152 "mini_l.y" /* yacc.c:1646  */
+#line 183 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1674 "y.tab.c" /* yacc.c:1646  */
+#line 1706 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 155 "mini_l.y" /* yacc.c:1646  */
+#line 186 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1680 "y.tab.c" /* yacc.c:1646  */
+#line 1712 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 156 "mini_l.y" /* yacc.c:1646  */
+#line 187 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1686 "y.tab.c" /* yacc.c:1646  */
+#line 1718 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 159 "mini_l.y" /* yacc.c:1646  */
+#line 190 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1692 "y.tab.c" /* yacc.c:1646  */
+#line 1724 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 160 "mini_l.y" /* yacc.c:1646  */
+#line 191 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1698 "y.tab.c" /* yacc.c:1646  */
+#line 1730 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 161 "mini_l.y" /* yacc.c:1646  */
+#line 192 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1704 "y.tab.c" /* yacc.c:1646  */
+#line 1736 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 162 "mini_l.y" /* yacc.c:1646  */
+#line 193 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1710 "y.tab.c" /* yacc.c:1646  */
+#line 1742 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 165 "mini_l.y" /* yacc.c:1646  */
+#line 196 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1716 "y.tab.c" /* yacc.c:1646  */
+#line 1748 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 166 "mini_l.y" /* yacc.c:1646  */
+#line 197 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1722 "y.tab.c" /* yacc.c:1646  */
+#line 1754 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 167 "mini_l.y" /* yacc.c:1646  */
+#line 198 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1728 "y.tab.c" /* yacc.c:1646  */
+#line 1760 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 168 "mini_l.y" /* yacc.c:1646  */
+#line 199 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1734 "y.tab.c" /* yacc.c:1646  */
+#line 1766 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 169 "mini_l.y" /* yacc.c:1646  */
+#line 200 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1740 "y.tab.c" /* yacc.c:1646  */
+#line 1772 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 170 "mini_l.y" /* yacc.c:1646  */
+#line 201 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1746 "y.tab.c" /* yacc.c:1646  */
+#line 1778 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 173 "mini_l.y" /* yacc.c:1646  */
+#line 204 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1752 "y.tab.c" /* yacc.c:1646  */
+#line 1784 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 174 "mini_l.y" /* yacc.c:1646  */
+#line 205 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1758 "y.tab.c" /* yacc.c:1646  */
+#line 1790 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 177 "mini_l.y" /* yacc.c:1646  */
+#line 208 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1764 "y.tab.c" /* yacc.c:1646  */
+#line 1796 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 178 "mini_l.y" /* yacc.c:1646  */
+#line 209 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1770 "y.tab.c" /* yacc.c:1646  */
+#line 1802 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 181 "mini_l.y" /* yacc.c:1646  */
+#line 212 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1776 "y.tab.c" /* yacc.c:1646  */
+#line 1808 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 182 "mini_l.y" /* yacc.c:1646  */
+#line 213 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1782 "y.tab.c" /* yacc.c:1646  */
+#line 1814 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 184 "mini_l.y" /* yacc.c:1646  */
+#line 215 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1788 "y.tab.c" /* yacc.c:1646  */
+#line 1820 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 185 "mini_l.y" /* yacc.c:1646  */
+#line 216 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1794 "y.tab.c" /* yacc.c:1646  */
+#line 1826 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 188 "mini_l.y" /* yacc.c:1646  */
+#line 219 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1800 "y.tab.c" /* yacc.c:1646  */
+#line 1832 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 189 "mini_l.y" /* yacc.c:1646  */
+#line 220 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1806 "y.tab.c" /* yacc.c:1646  */
+#line 1838 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 190 "mini_l.y" /* yacc.c:1646  */
+#line 221 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1812 "y.tab.c" /* yacc.c:1646  */
+#line 1844 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 191 "mini_l.y" /* yacc.c:1646  */
+#line 222 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1818 "y.tab.c" /* yacc.c:1646  */
+#line 1850 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 192 "mini_l.y" /* yacc.c:1646  */
+#line 223 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1824 "y.tab.c" /* yacc.c:1646  */
+#line 1856 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 193 "mini_l.y" /* yacc.c:1646  */
+#line 224 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1830 "y.tab.c" /* yacc.c:1646  */
+#line 1862 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 196 "mini_l.y" /* yacc.c:1646  */
+#line 227 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1836 "y.tab.c" /* yacc.c:1646  */
+#line 1868 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 197 "mini_l.y" /* yacc.c:1646  */
+#line 228 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1842 "y.tab.c" /* yacc.c:1646  */
+#line 1874 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 198 "mini_l.y" /* yacc.c:1646  */
+#line 229 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1848 "y.tab.c" /* yacc.c:1646  */
+#line 1880 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 201 "mini_l.y" /* yacc.c:1646  */
+#line 232 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1854 "y.tab.c" /* yacc.c:1646  */
+#line 1886 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 202 "mini_l.y" /* yacc.c:1646  */
+#line 233 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1860 "y.tab.c" /* yacc.c:1646  */
+#line 1892 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 203 "mini_l.y" /* yacc.c:1646  */
+#line 234 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1866 "y.tab.c" /* yacc.c:1646  */
+#line 1898 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 206 "mini_l.y" /* yacc.c:1646  */
+#line 237 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1872 "y.tab.c" /* yacc.c:1646  */
+#line 1904 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 207 "mini_l.y" /* yacc.c:1646  */
+#line 238 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1878 "y.tab.c" /* yacc.c:1646  */
+#line 1910 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 210 "mini_l.y" /* yacc.c:1646  */
+#line 241 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1884 "y.tab.c" /* yacc.c:1646  */
+#line 1916 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 211 "mini_l.y" /* yacc.c:1646  */
+#line 242 "mini_l.y" /* yacc.c:1646  */
     {}
-#line 1890 "y.tab.c" /* yacc.c:1646  */
+#line 1922 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1894 "y.tab.c" /* yacc.c:1646  */
+#line 1926 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2118,7 +2150,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 213 "mini_l.y" /* yacc.c:1906  */
+#line 244 "mini_l.y" /* yacc.c:1906  */
 
 
 int main(int argc, char ** argv) {
@@ -2132,9 +2164,11 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
+   p("before yyparse");
    yyparse();
+   p("after yyparse");
    
-   printCode();
+   utils.printCode(codeToWrite);
   
   return 0;
 }
@@ -2145,10 +2179,8 @@ int yyerror(const char* s) {
   return 0;
 }
 
-string intToString(int x) {
-	stringstream ss;
-	ss << x;
-	return ss.str();
+void p(string log) {
+	cout << "Logger #" << testCounter++ << " " << log << endl;
 }
 
 void printCode() {
@@ -2157,4 +2189,3 @@ void printCode() {
 		cout << codeToWrite.at(i) << endl;
 	}
 }
-
