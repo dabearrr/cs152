@@ -7,16 +7,16 @@ using namespace std;
  class Vars {
 	public:
 	Vars() {
-		counter = 1;
-		labelCounter = 1;
+		counter = -1;
+		labelCounter = -1;
 	}
 	string getTemp() {
-		return "__temp__" + intToString(counter);
 		counter++;
+		return "__temp__" + intToString(counter);
 	}
 	string getLabel() {
-		return "__label__" + intToString(labelCounter);
 		labelCounter++;
+		return "__label__" + intToString(labelCounter);
 	}
 	private:
 	int counter;
