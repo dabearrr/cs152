@@ -47,6 +47,9 @@
 		
 	};
 	
+	void addFunction(Function);
+	void addSymbol(Symbol);
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -100,9 +103,8 @@
 
 %token <val> NUMBER
 %token <op_val> IDENT
-%type <attr> identifier_ns
 %type <attr> var
-%type <attr> expression multiplicative_expr term rexpr
+%type <attr> expression multiplicative_expr term rexpr bool_expr statement relation_and_expr relation_expr
 %type <op_val> comp
 
 %error-verbose
@@ -146,7 +148,6 @@ statement_ns:
             ;
 
 declaration: IDENT identifier_ns COLON INTEGER {
-		p("declaration integer "  + $1->toString());
 		identStack.push($1);
 		paramStack.push($1);
 		
@@ -159,7 +160,6 @@ declaration: IDENT identifier_ns COLON INTEGER {
 		}
 }
 			| IDENT identifier_ns COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {
-		p("declaration array "  + $1->toString());
 		identStack.push($1);
 		paramStack.push($1);
 		
@@ -173,11 +173,11 @@ declaration: IDENT identifier_ns COLON INTEGER {
 }
            ;
 
-identifier_ns: 	
-				| COMMA IDENT identifier_ns {
+identifier_ns: COMMA IDENT identifier_ns {
 	identStack.push($2);
 	paramStack.push($2);
 }
+			| 
              ;
 
 statement: 	var ASSIGN expression {
@@ -197,7 +197,7 @@ statement: 	var ASSIGN expression {
 	labelStack.push(en);
 	
 	codeStream << mc.condGotoLabel(st, $2->name) << endl;
-	codeStream << mc.goToLabel(en) << endl;
+	codeStream << mc.gotoLabel(en) << endl;
 	codeStream << mc.label(st) << endl;
 
 }			
@@ -220,7 +220,7 @@ statement: 	var ASSIGN expression {
 	codeStream.str(" ");
 	
 	codeStream << mc.condGotoLabel(cond, $2->name) << endl;
-	codeStream << mc.goToLabel(endLabel) << endl;
+	codeStream << mc.gotoLabel(endLabel) << endl;
 	codeStream << mc.label(cond) << endl;
 	
 	labelStack.push(start);
@@ -236,7 +236,7 @@ statement: 	var ASSIGN expression {
 	string start = labelStack.top();
 	labelStack.pop();
 	
-	codeStream << mc.goToLabel(start) << endl;
+	codeStream << mc.gotoLabel(start) << endl;
 	codeStream << mc.label(endLabel) << endl;
 	
 	
@@ -294,7 +294,7 @@ statement: 	var ASSIGN expression {
 }
 			| CONTINUE { 
 	if(!labelStack.empty()) {
-		codeStream << mc.goToLabel(labelStack.top()) << endl;
+		codeStream << mc.gotoLabel(labelStack.top()) << endl;
 		outputCodeStream << codeStream.rdbuf();
 		codeStream.clear();
 		codeStream.str(" ");
@@ -328,7 +328,7 @@ var: 	IDENT {
 		$$->name = utils.charToString($1);
 		
 		codeStream << ". " << temp << endl;
-		codeStream << "=[] " << temp << ", " << $3->name << ", " << index << endl;
+		codeStream << "=[] " << temp << ", " << $3->name << ", " << $3->index << endl;
 	} else {
 		$$ = new Attribute();
 		$$->name = utils.charToString($1);
@@ -515,7 +515,7 @@ term: 	SUB var {
 }
 		| SUB NUMBER {
 	$$ = new Attribute();
-	$$->val = $2 * -1;
+	$$->number_val = $2 * -1;
 	$$->type = ATTR_INTEGER_TYPE;
 	string tempZero = tempGen.getTemp();
 	string tempNum = tempGen.getTemp();
@@ -603,6 +603,13 @@ int main(int argc, char ** argv) {
    p("after yyparse");
    
    utils.printCode(codeToWrite);
+   
+	ofstream file;
+	file.open("mil_code.mil");
+	file << outputCodeStream.str();
+	file.close();
+	
+	cout << "Code looks like: " + outputCodeStream.str();
   
   return 0;
 }
@@ -621,14 +628,16 @@ void addFunction(Function f) {
 	if(functionTable.find(f.name) == functionTable.end()) {
 		functionTable[f.name] = f;
 	} else {
-		yyerror("Function " + f.name " has already been declared");
+		string error = "Function " + f.name + " has already been declared";
+		yyerror(error.c_str());
 	}
 }
 
 void addSymbol(Symbol s) {
 	if(symbolTable.find(s.name) == symbolTable.end()) {
-		functionTable[s.name] = s;
+		symbolTable[s.name] = s;
 	} else {
-		yyerror("Symbol " + s.name " has already been declared");
+		string error = "Symbol " + s.name + " has already been declared";
+		yyerror(error.c_str());
 	}
 }
