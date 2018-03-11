@@ -112,6 +112,9 @@
 	void addFunction(Function);
 	void addSymbol(Symbol);
 	
+	void checkDeclaredFunction(string);
+	void checkDeclaredSymbol(string);
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -145,7 +148,7 @@
 	map<string, Symbol> symbolTable;
 	bool mainExists = false;
 
-#line 149 "y.tab.c" /* yacc.c:339  */
+#line 152 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -238,13 +241,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 88 "mini_l.y" /* yacc.c:355  */
+#line 91 "mini_l.y" /* yacc.c:355  */
 
   int val;
   char* op_val;
   Attribute* attr;
 
-#line 248 "y.tab.c" /* yacc.c:355  */
+#line 251 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -261,7 +264,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 265 "y.tab.c" /* yacc.c:358  */
+#line 268 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -563,13 +566,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   115,   115,   117,   118,   121,   121,   121,   143,   144,
-     147,   148,   151,   163,   177,   181,   184,   193,   193,   209,
-     209,   237,   237,   251,   254,   267,   280,   290,   299,   306,
-     325,   326,   326,   335,   336,   341,   347,   353,   359,   365,
-     369,   377,   384,   391,   398,   404,   405,   406,   407,   408,
-     409,   412,   419,   426,   433,   440,   447,   454,   461,   490,
-     506,   523,   537,   549,   550,   564,   574,   577
+       0,   118,   118,   120,   121,   124,   124,   124,   146,   147,
+     150,   151,   154,   166,   180,   184,   187,   196,   196,   212,
+     212,   240,   240,   254,   257,   270,   283,   293,   302,   312,
+     335,   336,   336,   345,   346,   351,   357,   363,   369,   375,
+     379,   387,   394,   401,   408,   414,   415,   416,   417,   418,
+     419,   422,   429,   436,   443,   450,   457,   464,   471,   500,
+     516,   533,   547,   559,   560,   574,   584,   587
 };
 #endif
 
@@ -1443,30 +1446,30 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 115 "mini_l.y" /* yacc.c:1646  */
+#line 118 "mini_l.y" /* yacc.c:1646  */
     { if (!mainExists) { yyerror("Error: main does not exist"); } }
-#line 1449 "y.tab.c" /* yacc.c:1646  */
+#line 1452 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 121 "mini_l.y" /* yacc.c:1646  */
+#line 124 "mini_l.y" /* yacc.c:1646  */
     { codeStream << "func " << (yyvsp[0].op_val) << endl; }
-#line 1455 "y.tab.c" /* yacc.c:1646  */
+#line 1458 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 121 "mini_l.y" /* yacc.c:1646  */
+#line 124 "mini_l.y" /* yacc.c:1646  */
     {
 	while(!paramStack.empty()) {
 		codeStream << "= " << paramStack.top() << ", " << "$" << paramCount++ << endl;
 		paramStack.pop();
 	}
 }
-#line 1466 "y.tab.c" /* yacc.c:1646  */
+#line 1469 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 127 "mini_l.y" /* yacc.c:1646  */
+#line 130 "mini_l.y" /* yacc.c:1646  */
     {
 	outputCodeStream << "endfunc\n";
 	symbolTable.clear();
@@ -1481,11 +1484,11 @@ yyreduce:
 	}
 	
 }
-#line 1485 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 151 "mini_l.y" /* yacc.c:1646  */
+#line 154 "mini_l.y" /* yacc.c:1646  */
     {
 		identStack.push((yyvsp[-3].op_val));
 		paramStack.push((yyvsp[-3].op_val));
@@ -1498,11 +1501,11 @@ yyreduce:
 			identStack.pop();
 		}
 }
-#line 1502 "y.tab.c" /* yacc.c:1646  */
+#line 1505 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 163 "mini_l.y" /* yacc.c:1646  */
+#line 166 "mini_l.y" /* yacc.c:1646  */
     {
 		identStack.push((yyvsp[-8].op_val));
 		paramStack.push((yyvsp[-8].op_val));
@@ -1515,20 +1518,20 @@ yyreduce:
 			identStack.pop();
 		}
 }
-#line 1519 "y.tab.c" /* yacc.c:1646  */
+#line 1522 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 177 "mini_l.y" /* yacc.c:1646  */
+#line 180 "mini_l.y" /* yacc.c:1646  */
     {
 	identStack.push((yyvsp[-1].op_val));
 	paramStack.push((yyvsp[-1].op_val));
 }
-#line 1528 "y.tab.c" /* yacc.c:1646  */
+#line 1531 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 184 "mini_l.y" /* yacc.c:1646  */
+#line 187 "mini_l.y" /* yacc.c:1646  */
     {
 	if ((yyvsp[-2].attr)->type == ATTR_INTEGER_TYPE) {
 		codeStream << mc.copyElement((yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
@@ -1538,11 +1541,11 @@ yyreduce:
 	
 	pushToOutputAndClear();
 }
-#line 1542 "y.tab.c" /* yacc.c:1646  */
+#line 1545 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 193 "mini_l.y" /* yacc.c:1646  */
+#line 196 "mini_l.y" /* yacc.c:1646  */
     {
 	string st = tempGen.getLabel();
 	string en = tempGen.getLabel();
@@ -1553,22 +1556,22 @@ yyreduce:
 	codeStream << mc.label(st) << endl;
 
 }
-#line 1557 "y.tab.c" /* yacc.c:1646  */
+#line 1560 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 203 "mini_l.y" /* yacc.c:1646  */
+#line 206 "mini_l.y" /* yacc.c:1646  */
     {
 	codeStream << mc.label(labelStack.top()) << endl;
 	labelStack.pop();
 	
 	pushToOutputAndClear();
 }
-#line 1568 "y.tab.c" /* yacc.c:1646  */
+#line 1571 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 209 "mini_l.y" /* yacc.c:1646  */
+#line 212 "mini_l.y" /* yacc.c:1646  */
     {
 	string cond = tempGen.getLabel();
 	string endLabel = tempGen.getLabel();
@@ -1584,11 +1587,11 @@ yyreduce:
 	labelStack.push(start);
 	labelStack.push(endLabel);
 }
-#line 1588 "y.tab.c" /* yacc.c:1646  */
+#line 1591 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 224 "mini_l.y" /* yacc.c:1646  */
+#line 227 "mini_l.y" /* yacc.c:1646  */
     {
 	pushToOutputAndClear();
 	
@@ -1602,11 +1605,11 @@ yyreduce:
 	
 	
 }
-#line 1606 "y.tab.c" /* yacc.c:1646  */
+#line 1609 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 237 "mini_l.y" /* yacc.c:1646  */
+#line 240 "mini_l.y" /* yacc.c:1646  */
     {
 	string start = tempGen.getLabel();
 	labelStack.push(start);
@@ -1614,11 +1617,11 @@ yyreduce:
 	outputCodeStream << mc.label(start) << endl;
 	pushToOutputAndClear();
 }
-#line 1618 "y.tab.c" /* yacc.c:1646  */
+#line 1621 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 244 "mini_l.y" /* yacc.c:1646  */
+#line 247 "mini_l.y" /* yacc.c:1646  */
     {
 	string start = labelStack.top();
 	codeStream << mc.condGotoLabel(start, (yyvsp[0].attr)->name) << endl;
@@ -1626,19 +1629,19 @@ yyreduce:
 	
 	pushToOutputAndClear();
 }
-#line 1630 "y.tab.c" /* yacc.c:1646  */
+#line 1633 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 251 "mini_l.y" /* yacc.c:1646  */
+#line 254 "mini_l.y" /* yacc.c:1646  */
     {
 				//give up
 }
-#line 1638 "y.tab.c" /* yacc.c:1646  */
+#line 1641 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 254 "mini_l.y" /* yacc.c:1646  */
+#line 257 "mini_l.y" /* yacc.c:1646  */
     {
 	varStack.push((yyvsp[-1].attr)->name);
 	while(!varStack.empty()) {
@@ -1652,11 +1655,11 @@ yyreduce:
 	pushToOutputAndClear();
 	}
 }
-#line 1656 "y.tab.c" /* yacc.c:1646  */
+#line 1659 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 267 "mini_l.y" /* yacc.c:1646  */
+#line 270 "mini_l.y" /* yacc.c:1646  */
     {
 	varStack.push((yyvsp[-1].attr)->name);
 	while(!varStack.empty()) {
@@ -1670,11 +1673,11 @@ yyreduce:
 	pushToOutputAndClear();
 	}
 }
-#line 1674 "y.tab.c" /* yacc.c:1646  */
+#line 1677 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 280 "mini_l.y" /* yacc.c:1646  */
+#line 283 "mini_l.y" /* yacc.c:1646  */
     { 
 	if(!labelStack.empty()) {
 		codeStream << mc.gotoLabel(labelStack.top()) << endl;
@@ -1685,11 +1688,11 @@ yyreduce:
 		yyerror("Cannot use CONTINUE outside of a loop");
 	}
 }
-#line 1689 "y.tab.c" /* yacc.c:1646  */
+#line 1692 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 290 "mini_l.y" /* yacc.c:1646  */
+#line 293 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->number_val = (yyvsp[0].attr)->number_val;
@@ -1697,24 +1700,31 @@ yyreduce:
 	codeStream << mc.ret((yyvsp[0].attr)->name) << endl;
 	pushToOutputAndClear();
 }
-#line 1701 "y.tab.c" /* yacc.c:1646  */
+#line 1704 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 299 "mini_l.y" /* yacc.c:1646  */
+#line 302 "mini_l.y" /* yacc.c:1646  */
     {
-	//checkDeclaredSymbol($1);
+	checkDeclaredSymbol((yyvsp[0].op_val));
+	if (symbolTable[(yyvsp[0].op_val)].type == INTARRAY) {
+		yyerror("Symbol is actually an int array type");
+	}
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->type = ATTR_INTEGER_TYPE;
 	(yyval.attr)->name = utils.charToString((yyvsp[0].op_val));
 	p("var here: " + (yyval.attr)->toString());
 }
-#line 1713 "y.tab.c" /* yacc.c:1646  */
+#line 1719 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 306 "mini_l.y" /* yacc.c:1646  */
+#line 312 "mini_l.y" /* yacc.c:1646  */
     {
+	
+	if (symbolTable[(yyvsp[-3].op_val)].type == INT) {
+		yyerror("Symbol is actually an int type");
+	}
 	if((yyvsp[-1].attr)->type == ATTR_LIST_TYPE) {
 		string temp = tempGen.getTemp();
 		(yyval.attr) = new Attribute();
@@ -1731,11 +1741,11 @@ yyreduce:
 		(yyval.attr)->index = (yyvsp[-1].attr)->name;
 	}
 }
-#line 1735 "y.tab.c" /* yacc.c:1646  */
+#line 1745 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 326 "mini_l.y" /* yacc.c:1646  */
+#line 336 "mini_l.y" /* yacc.c:1646  */
     {
 			string label = tempGen.getLabel();
 			codeStream << mc.gotoLabel(label) << endl;
@@ -1743,79 +1753,79 @@ yyreduce:
 			labelStack.pop();
 			labelStack.push(label);
 		}
-#line 1747 "y.tab.c" /* yacc.c:1646  */
+#line 1757 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 336 "mini_l.y" /* yacc.c:1646  */
+#line 346 "mini_l.y" /* yacc.c:1646  */
     {
 	varStack.push((yyvsp[-1].attr)->name);
 }
-#line 1755 "y.tab.c" /* yacc.c:1646  */
+#line 1765 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 341 "mini_l.y" /* yacc.c:1646  */
+#line 351 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
 	(yyval.attr)->name = temp;
 	codeStream << mc.logicalBinary("||", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 }
-#line 1766 "y.tab.c" /* yacc.c:1646  */
+#line 1776 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 347 "mini_l.y" /* yacc.c:1646  */
+#line 357 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[0].attr)->name;
 }
-#line 1775 "y.tab.c" /* yacc.c:1646  */
+#line 1785 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 353 "mini_l.y" /* yacc.c:1646  */
+#line 363 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
 	(yyval.attr)->name = temp;
 	codeStream << mc.logicalBinary("&&", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 }
-#line 1786 "y.tab.c" /* yacc.c:1646  */
+#line 1796 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 359 "mini_l.y" /* yacc.c:1646  */
+#line 369 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[0].attr)->name;
 }
-#line 1795 "y.tab.c" /* yacc.c:1646  */
+#line 1805 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 365 "mini_l.y" /* yacc.c:1646  */
+#line 375 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[0].attr)->name;
 }
-#line 1804 "y.tab.c" /* yacc.c:1646  */
+#line 1814 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 369 "mini_l.y" /* yacc.c:1646  */
+#line 379 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
 	(yyval.attr)->name = temp;
 	codeStream << mc.logicalNot(temp, (yyvsp[0].attr)->name) << endl;
 }
-#line 1815 "y.tab.c" /* yacc.c:1646  */
+#line 1825 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 377 "mini_l.y" /* yacc.c:1646  */
+#line 387 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1823,11 +1833,11 @@ yyreduce:
 	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.logicalBinary((yyvsp[-1].op_val), temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 }
-#line 1827 "y.tab.c" /* yacc.c:1646  */
+#line 1837 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 384 "mini_l.y" /* yacc.c:1646  */
+#line 394 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1835,11 +1845,11 @@ yyreduce:
 	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.copyElement(temp, "1") << endl;
 }
-#line 1839 "y.tab.c" /* yacc.c:1646  */
+#line 1849 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 391 "mini_l.y" /* yacc.c:1646  */
+#line 401 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1847,56 +1857,56 @@ yyreduce:
 	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.copyElement(temp, "0") << endl;
 }
-#line 1851 "y.tab.c" /* yacc.c:1646  */
+#line 1861 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 398 "mini_l.y" /* yacc.c:1646  */
+#line 408 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[-1].attr)->name;
 }
-#line 1860 "y.tab.c" /* yacc.c:1646  */
+#line 1870 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 404 "mini_l.y" /* yacc.c:1646  */
+#line 414 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>("=="); }
-#line 1866 "y.tab.c" /* yacc.c:1646  */
+#line 1876 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 405 "mini_l.y" /* yacc.c:1646  */
+#line 415 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>("!="); }
-#line 1872 "y.tab.c" /* yacc.c:1646  */
+#line 1882 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 406 "mini_l.y" /* yacc.c:1646  */
+#line 416 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>("<"); }
-#line 1878 "y.tab.c" /* yacc.c:1646  */
+#line 1888 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 407 "mini_l.y" /* yacc.c:1646  */
+#line 417 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>(">"); }
-#line 1884 "y.tab.c" /* yacc.c:1646  */
+#line 1894 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 408 "mini_l.y" /* yacc.c:1646  */
+#line 418 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>("<="); }
-#line 1890 "y.tab.c" /* yacc.c:1646  */
+#line 1900 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 409 "mini_l.y" /* yacc.c:1646  */
+#line 419 "mini_l.y" /* yacc.c:1646  */
     { (yyval.op_val) = const_cast<char*>(">="); }
-#line 1896 "y.tab.c" /* yacc.c:1646  */
+#line 1906 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 412 "mini_l.y" /* yacc.c:1646  */
+#line 422 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1904,11 +1914,11 @@ yyreduce:
 	codeStream << mc.arithmatic("+", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 1908 "y.tab.c" /* yacc.c:1646  */
+#line 1918 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 419 "mini_l.y" /* yacc.c:1646  */
+#line 429 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1916,21 +1926,21 @@ yyreduce:
 	codeStream << mc.arithmatic("-", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 1920 "y.tab.c" /* yacc.c:1646  */
+#line 1930 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 426 "mini_l.y" /* yacc.c:1646  */
+#line 436 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[0].attr)->name;
 	(yyvsp[0].attr)->type = (yyvsp[0].attr)->type;
 }
-#line 1930 "y.tab.c" /* yacc.c:1646  */
+#line 1940 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 433 "mini_l.y" /* yacc.c:1646  */
+#line 443 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1938,11 +1948,11 @@ yyreduce:
 	codeStream << mc.arithmatic("*", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 1942 "y.tab.c" /* yacc.c:1646  */
+#line 1952 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 440 "mini_l.y" /* yacc.c:1646  */
+#line 450 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1950,11 +1960,11 @@ yyreduce:
 	codeStream << mc.arithmatic("/", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 1954 "y.tab.c" /* yacc.c:1646  */
+#line 1964 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 447 "mini_l.y" /* yacc.c:1646  */
+#line 457 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string temp = tempGen.getTemp();
@@ -1962,21 +1972,21 @@ yyreduce:
 	codeStream << mc.arithmatic("%", temp, (yyvsp[-2].attr)->name, (yyvsp[0].attr)->name) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 1966 "y.tab.c" /* yacc.c:1646  */
+#line 1976 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 454 "mini_l.y" /* yacc.c:1646  */
+#line 464 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->name = (yyvsp[0].attr)->name;
 	(yyvsp[0].attr)->type = (yyvsp[0].attr)->type;
 }
-#line 1976 "y.tab.c" /* yacc.c:1646  */
+#line 1986 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 461 "mini_l.y" /* yacc.c:1646  */
+#line 471 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->number_val = (yyvsp[0].attr)->number_val * -1;
@@ -2006,11 +2016,11 @@ yyreduce:
 		
 	}
 }
-#line 2010 "y.tab.c" /* yacc.c:1646  */
+#line 2020 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 490 "mini_l.y" /* yacc.c:1646  */
+#line 500 "mini_l.y" /* yacc.c:1646  */
     { 
 	p("term, var: " + (yyvsp[0].attr)->toString());
 	(yyval.attr) = new Attribute();
@@ -2027,11 +2037,11 @@ yyreduce:
 		codeStream << mc.arrayAccessAssignFrom((yyval.attr)->name, (yyvsp[0].attr)->name, (yyvsp[0].attr)->index) << endl;
 	}
 }
-#line 2031 "y.tab.c" /* yacc.c:1646  */
+#line 2041 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 506 "mini_l.y" /* yacc.c:1646  */
+#line 516 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	(yyval.attr)->number_val = (yyvsp[0].val) * -1;
@@ -2049,11 +2059,11 @@ yyreduce:
 	codeStream << mc.copyElement((yyval.attr)->name, (yyval.attr)->number_val) << endl;
 	
 		}
-#line 2053 "y.tab.c" /* yacc.c:1646  */
+#line 2063 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 523 "mini_l.y" /* yacc.c:1646  */
+#line 533 "mini_l.y" /* yacc.c:1646  */
     { 
 	p("NUMBER, value is: " + utils.intToString((yyvsp[0].val)));
 	(yyval.attr) = new Attribute();
@@ -2068,11 +2078,11 @@ yyreduce:
 	codeStream << mc.varName((yyval.attr)->name) << endl;
 	codeStream << mc.copyElement((yyval.attr)->name, (yyval.attr)->number_val) << endl;
 }
-#line 2072 "y.tab.c" /* yacc.c:1646  */
+#line 2082 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 537 "mini_l.y" /* yacc.c:1646  */
+#line 547 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.attr) = new Attribute();
 	string tempZero = tempGen.getTemp();
@@ -2085,17 +2095,17 @@ yyreduce:
 	codeStream << mc.varName((yyval.attr)->name) << endl;
 	codeStream << mc.arithmatic("-", (yyval.attr)->name, tempZero, (yyvsp[-1].attr)->name) << endl;
 }
-#line 2089 "y.tab.c" /* yacc.c:1646  */
+#line 2099 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 549 "mini_l.y" /* yacc.c:1646  */
+#line 559 "mini_l.y" /* yacc.c:1646  */
     { (yyval.attr) = new Attribute() ; (yyval.attr)->name = (yyvsp[-1].attr)->name; }
-#line 2095 "y.tab.c" /* yacc.c:1646  */
+#line 2105 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 550 "mini_l.y" /* yacc.c:1646  */
+#line 560 "mini_l.y" /* yacc.c:1646  */
     {
 	// check for function
 	(yyval.attr) = new Attribute();
@@ -2110,11 +2120,11 @@ yyreduce:
 	codeStream << mc.call((yyvsp[-4].op_val), temp) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 2114 "y.tab.c" /* yacc.c:1646  */
+#line 2124 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 564 "mini_l.y" /* yacc.c:1646  */
+#line 574 "mini_l.y" /* yacc.c:1646  */
     {
 	// check for function
 	(yyval.attr) = new Attribute();
@@ -2123,19 +2133,19 @@ yyreduce:
 	codeStream << mc.call((yyvsp[-2].op_val), temp) << endl;
 	(yyval.attr)->name = temp;
 }
-#line 2127 "y.tab.c" /* yacc.c:1646  */
+#line 2137 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 574 "mini_l.y" /* yacc.c:1646  */
+#line 584 "mini_l.y" /* yacc.c:1646  */
     {
                    expStack.push((yyvsp[-1].attr)->name); 
                  }
-#line 2135 "y.tab.c" /* yacc.c:1646  */
+#line 2145 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2139 "y.tab.c" /* yacc.c:1646  */
+#line 2149 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2363,7 +2373,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 579 "mini_l.y" /* yacc.c:1906  */
+#line 589 "mini_l.y" /* yacc.c:1906  */
 
 
 int main(int argc, char ** argv) {

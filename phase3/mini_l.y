@@ -51,6 +51,9 @@
 	void addFunction(Function);
 	void addSymbol(Symbol);
 	
+	void checkDeclaredFunction(string);
+	void checkDeclaredSymbol(string);
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -297,13 +300,20 @@ statement: 	var ASSIGN expression {
          ;
 
 var: 	IDENT {
-	//checkDeclaredSymbol($1);
+	checkDeclaredSymbol($1);
+	if (symbolTable[$1].type == INTARRAY) {
+		yyerror("Symbol is actually an int array type");
+	}
 	$$ = new Attribute();
 	$$->type = ATTR_INTEGER_TYPE;
 	$$->name = utils.charToString($1);
 	p("var here: " + $$->toString());
 } 
 		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+	
+	if (symbolTable[$1].type == INT) {
+		yyerror("Symbol is actually an int type");
+	}
 	if($3->type == ATTR_LIST_TYPE) {
 		string temp = tempGen.getTemp();
 		$$ = new Attribute();
