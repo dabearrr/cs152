@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Utils.h"
 
 class MilCode {
 	public:
@@ -12,11 +13,11 @@ class MilCode {
 	}
 
 	string call(string name, string dest) {
-        return ("call " + name + " " + dest);
+        return ("call " + name + ", " + dest);
 	}
 
 	string ret(string src) {
-        return ("ret" + src);
+        return ("ret " + src);
 	}
 
 	// Variable Declaration Statements
@@ -40,6 +41,10 @@ class MilCode {
 	// Copy Statements
 	string copyElement(string dst, string src) {
         return ("= " + dst + ", " + src);
+	}
+	
+	string copyElement(string dst, int src) {
+        return ("= " + dst + ", " + utils.intToString(src));
 	}
 
 	// Array Access Statements
@@ -80,7 +85,7 @@ class MilCode {
 
 	// Logical Operator Statements (one or both source operands can be immediates)
 	string logicalBinary(string op, string dst, string src1, string src2) {
-	    return (op + " " + dst + "," + src1 + ", " + src2);
+	    return (op + " " + dst + ", " + src1 + ", " + src2);
 	}
 
 	string logicalNot(string dst, string src) {
@@ -102,5 +107,5 @@ class MilCode {
 	}
 
 	private:
-	
+	Utils utils;
 };

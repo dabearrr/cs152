@@ -28,6 +28,7 @@
 	void printCode();
 	string charToString(char*);
 	void p(string);
+	void pushToOutputAndClear();
 	
 	struct Function {
 		string name;
@@ -187,9 +188,7 @@ statement: 	var ASSIGN expression {
 		codeStream << mc.arrayAccessAssignTo($1->name, $1->index, $3->name) << endl;
 	}
 	
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 }
 			| IF bool_expr THEN {
 	string st = tempGen.getLabel();
@@ -205,9 +204,7 @@ statement: 	var ASSIGN expression {
 	codeStream << mc.label(labelStack.top()) << endl;
 	labelStack.pop();
 	
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 }
 			| WHILE bool_expr BEGINLOOP {
 	string cond = tempGen.getLabel();
@@ -215,9 +212,7 @@ statement: 	var ASSIGN expression {
 	string start = tempGen.getLabel();
 	outputCodeStream << mc.label(start) << endl;
 	
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 	
 	codeStream << mc.condGotoLabel(cond, $2->name) << endl;
 	codeStream << mc.gotoLabel(endLabel) << endl;
@@ -227,9 +222,7 @@ statement: 	var ASSIGN expression {
 	labelStack.push(endLabel);
 }			
 			statement SEMICOLON statement_ns ENDLOOP {
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 	
 	string endLabel = labelStack.top();
 	labelStack.pop();
@@ -246,18 +239,14 @@ statement: 	var ASSIGN expression {
 	labelStack.push(start);
 	
 	outputCodeStream << mc.label(start) << endl;
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 }
 			statement SEMICOLON statement_ns ENDLOOP WHILE bool_expr {
 	string start = labelStack.top();
 	codeStream << mc.condGotoLabel(start, $9->name) << endl;
 	labelStack.pop();
 	
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 }
 			| FOREACH IDENT IN IDENT BEGINLOOP statement SEMICOLON statement_ns ENDLOOP {
 				//give up
@@ -272,9 +261,7 @@ statement: 	var ASSIGN expression {
 			codeStream << mc.readIntoDestArray(varStack.top(), $2->index) << endl;
 			varStack.pop();
 		}
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 	}
 }
 			| WRITE var var_ns {
@@ -287,9 +274,7 @@ statement: 	var ASSIGN expression {
 			codeStream << mc.writeSourceArrayToOut(varStack.top(), $2->index) << endl;
 			varStack.pop();
 		}
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 	}
 }
 			| CONTINUE { 
@@ -307,13 +292,12 @@ statement: 	var ASSIGN expression {
 	$$->number_val = $2->number_val;
 	$$->name = $2->name;
 	codeStream << mc.ret($2->name) << endl;
-	outputCodeStream << codeStream.rdbuf();
-	codeStream.clear();
-	codeStream.str(" ");
+	pushToOutputAndClear();
 }
          ;
 
 var: 	IDENT {
+	//checkDeclaredSymbol($1);
 	$$ = new Attribute();
 	$$->type = ATTR_INTEGER_TYPE;
 	$$->name = utils.charToString($1);
@@ -327,8 +311,8 @@ var: 	IDENT {
 		$$->index = temp;
 		$$->name = utils.charToString($1);
 		
-		codeStream << ". " << temp << endl;
-		codeStream << "=[] " << temp << ", " << $3->name << ", " << $3->index << endl;
+		codeStream << mc.varName(temp) << endl;
+		codeStream << mc.arrayAccessAssignFrom(temp, $3->name, $3->index) << endl;
 	} else {
 		$$ = new Attribute();
 		$$->name = utils.charToString($1);
@@ -341,8 +325,8 @@ var: 	IDENT {
 else_ns: 
 		| ELSE {
 			string label = tempGen.getLabel();
-			codeStream << ":= " << label << endl;
-			codeStream << ": " << labelStack.top() << endl;
+			codeStream << mc.gotoLabel(label) << endl;
+			codeStream << mc.label(labelStack.top()) << endl;
 			labelStack.pop();
 			labelStack.push(label);
 		} statement SEMICOLON statement_ns
@@ -358,7 +342,7 @@ bool_expr: bool_expr OR relation_and_expr  {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << "|| " << temp << ", " << $1->name << ", " << $3->name << endl;
+	codeStream << mc.logicalBinary("||", temp, $1->name, $3->name) << endl;
 }
 			| relation_and_expr {
 	$$ = new Attribute();
@@ -370,7 +354,7 @@ relation_and_expr: 	relation_and_expr AND relation_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << "&& " << temp << ", " << $1->name << ", " << $3->name << endl;
+	codeStream << mc.logicalBinary("&&", temp, $1->name, $3->name) << endl;
 }
 					| relation_expr {
 	$$ = new Attribute();
@@ -386,7 +370,7 @@ relation_expr: 	rexpr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << "! " << temp << ", " << $2->name << endl;
+	codeStream << mc.logicalNot(temp, $2->name) << endl;
 }
              ;
 
@@ -394,22 +378,22 @@ rexpr: 	expression comp expression {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << ". " << temp << endl;
-	codeStream << $2 << " " << temp << ", " << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.logicalBinary($2, temp, $1->name, $3->name) << endl;
 } 
 		| TRUE {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << ". " << temp << endl;
-	codeStream << "= " << temp << ", " << "1" << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.copyElement(temp, "1") << endl;
 } 
 		| FALSE {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
-	codeStream << ". " << temp << endl;
-	codeStream << "= " << temp << ", " << "0" << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.copyElement(temp, "0") << endl;
 }
 		| L_PAREN bool_expr R_PAREN {
 	$$ = new Attribute();
@@ -428,15 +412,15 @@ comp:	EQ { $$ = const_cast<char*>("=="); }
 expression: multiplicative_expr ADD multiplicative_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "+ " << temp << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.arithmatic("+", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 } 
 			| multiplicative_expr SUB multiplicative_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "- " << temp << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.arithmatic("-", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 }
 			| multiplicative_expr {
@@ -449,22 +433,22 @@ expression: multiplicative_expr ADD multiplicative_expr {
 multiplicative_expr: multiplicative_expr MULT term {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "* " << temp << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.arithmatic("*", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 }  
 					| multiplicative_expr DIV term {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "/ " << temp << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.arithmatic("/", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 } 
 					| multiplicative_expr MOD term {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "% " << temp << $1->name << ", " << $3->name << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.arithmatic("%", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 } 
 					| term {
@@ -481,19 +465,25 @@ term: 	SUB var {
 	if ($2->type != ATTR_LIST_TYPE) {
 		string tempZero = tempGen.getTemp();
 		string tempNum = tempGen.getTemp();;
-		codeStream << ". " << tempZero << endl << "= " << tempZero << ", " << "0" << endl;
-		codeStream << ". " << tempNum << endl << "= " << tempNum << ", " << $2->name << endl;
+		codeStream << mc.varName(tempZero) << endl;
+		codeStream << mc.copyElement(tempZero, "0") << endl;
+		codeStream << mc.varName(tempNum) << endl;
+		codeStream << mc.copyElement(tempNum, $2->name) << endl;
+		
 		$$->name = tempGen.getTemp();
-		codeStream << ". " << $$->name << endl;
-		codeStream << "- " << $$->name << ", " << tempZero << ", " << tempNum << endl;
+		codeStream << mc.varName($$->name) << endl;
+		codeStream << mc.arithmatic("-", $$->name, tempZero, tempNum) << endl;
 	} else {
 		string tempZero = tempGen.getTemp();
 		string tempNum = tempGen.getTemp();
-		codeStream << ". " << tempZero << endl << "= " << tempZero << ", " << "0" << endl;
-		codeStream << ". " << tempNum << endl << "=[] " << tempNum << ", " << $2->name << ", " << $2->index << endl;
+		codeStream << mc.varName(tempZero) << endl;
+		codeStream << mc.copyElement(tempZero, "0") << endl;
+		codeStream << mc.varName(tempNum) << endl;
+		codeStream << mc.arrayAccessAssignFrom(tempNum, $2->name, $2->index) << endl;
+		
 		$$->name = tempGen.getTemp();
-		codeStream << ". " << $$->name << endl;
-		codeStream << "- " << $$->name << ", " << tempZero << ", " << tempNum << endl;
+		codeStream << mc.varName($$->name) << endl;
+		codeStream << mc.arithmatic("-", $$->name, tempZero, tempNum) << endl;
 		
 	}
 }
@@ -505,12 +495,12 @@ term: 	SUB var {
 	if($1->type != ATTR_LIST_TYPE) {
 		$$->name = tempGen.getTemp();
 		$$->index = $$->name;
-		codeStream << ". " << $$->name << endl;
-		codeStream << "= " << $$->name << ", " << $1->name << endl;
+		codeStream << mc.varName($$->name) << endl;
+		codeStream << mc.copyElement($$->name, $1->name) << endl;
 	} else {
 		$$->name = tempGen.getTemp();
-		codeStream << ". " << $$->name << endl;
-		codeStream << "=[] " << $$->name << ", " << $1->name << ", " << $1->index << endl;
+		codeStream << mc.varName($$->name) << endl;
+		codeStream << mc.arrayAccessAssignFrom($$->name, $1->name, $1->index) << endl;
 	}
 }
 		| SUB NUMBER {
@@ -519,14 +509,15 @@ term: 	SUB var {
 	$$->type = ATTR_INTEGER_TYPE;
 	string tempZero = tempGen.getTemp();
 	string tempNum = tempGen.getTemp();
-	codeStream << ". " << tempZero << endl;
-	codeStream << "= " << tempZero << ", " << "0" << endl;
-	codeStream << ". " << tempNum << endl;
-	codeStream << "= " << tempNum << ", " << $2 << endl;
+	
+	codeStream << mc.varName(tempZero) << endl;
+	codeStream << mc.copyElement(tempZero, "0") << endl;
+	codeStream << mc.varName(tempNum) << endl;
+	codeStream << mc.copyElement(tempNum, $2) << endl;
 	
 	$$->name = tempGen.getTemp();
-	codeStream << ". " << $$->name << endl;
-	codeStream << "= " << $$->name << ", " << $$->number_val << endl;
+	codeStream << mc.varName($$->name) << endl;
+	codeStream << mc.copyElement($$->name, $$->number_val) << endl;
 	
 		}
 		| NUMBER  { 
@@ -540,20 +531,20 @@ term: 	SUB var {
 	
 	$$->list.push_back(utils.intToString($1));
 	
-	codeStream << ". " << $$->name << endl;
-	codeStream << "= " << $$->name << ", " << $$->number_val << endl;
+	codeStream << mc.varName($$->name) << endl;
+	codeStream << mc.copyElement($$->name, $$->number_val) << endl;
 }
 		| SUB L_PAREN expression R_PAREN {
 	$$ = new Attribute();
 	string tempZero = tempGen.getTemp();
 	
-	codeStream << ". " << tempZero << endl;
-	codeStream << "= " << tempZero << ", " << "0" << endl;
+	codeStream << mc.varName(tempZero) << endl;
+	codeStream << mc.copyElement(tempZero, "0") << endl;
 	
 	$$->name = tempGen.getTemp();
 	
-	codeStream << ". " << $$->name << endl;
-	codeStream << "- " << $$->name << ", " << tempZero << ", " << $3->name << endl;
+	codeStream << mc.varName($$->name) << endl;
+	codeStream << mc.arithmatic("-", $$->name, tempZero, $3->name) << endl;
 }
 		| L_PAREN expression R_PAREN { $$ = new Attribute() ; $$->name = $2->name; }
 		| IDENT L_PAREN expression exp_s R_PAREN {
@@ -561,21 +552,21 @@ term: 	SUB var {
 	$$ = new Attribute();
 	expStack.push($3->name);
 	while(!expStack.empty()) {
-		codeStream << "param " << expStack.top() << endl;
+		codeStream << mc.param(expStack.top()) << endl;
 		expStack.pop();
 	}
 	
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "call " << $1 << ", " << temp << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.call($1, temp) << endl;
 	$$->name = temp;
 }
 		| IDENT L_PAREN R_PAREN {
 	// check for function
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
-	codeStream << ". " << temp << endl;
-	codeStream << "call " << $1 << ", " << temp << endl;
+	codeStream << mc.varName(temp) << endl;
+	codeStream << mc.call($1, temp) << endl;
 	$$->name = temp;
 }
     ;
@@ -615,13 +606,26 @@ int main(int argc, char ** argv) {
 }
 
 int yyerror(const char* s) {
-  printf("Error at line %d, column %d: Error at \"%s\" \n", curLine, curPos, s);
+  printf("Error at line %d, column %d: Error is: \"%s\" \n", curLine, curPos, s);
   exit(1);
   return 0;
 }
 
 void p(string log) {
 	cout << "Logger #" << testCounter++ << " " << log << endl;
+}
+
+void checkDeclaredFunction(string f) {
+	if(functionTable.find(f) == functionTable.end()) {
+		string error = "Function " + f + " has not been declared";
+		yyerror(error.c_str());
+	}
+}
+void checkDeclaredSymbol(string s) {
+	if(symbolTable.find(s) == symbolTable.end()) {
+		string error = "Symbol " + s + " has not been declared";
+		yyerror(error.c_str());
+	}
 }
 
 void addFunction(Function f) {
@@ -640,4 +644,10 @@ void addSymbol(Symbol s) {
 		string error = "Symbol " + s.name + " has already been declared";
 		yyerror(error.c_str());
 	}
+}
+
+void pushToOutputAndClear() {
+	outputCodeStream << codeStream.rdbuf();
+	codeStream.clear();
+	codeStream.str(" ");
 }
