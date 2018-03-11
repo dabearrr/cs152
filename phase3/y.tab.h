@@ -77,24 +77,24 @@ extern int yydebug;
     RETURN = 287,
     AND = 288,
     OR = 289,
-    NUMBER = 290,
-    IDENT = 291,
-    L_PAREN = 292,
-    R_PAREN = 293,
-    L_SQUARE_BRACKET = 294,
-    R_SQUARE_BRACKET = 295,
-    MULT = 296,
-    DIV = 297,
-    MOD = 298,
-    ADD = 299,
-    SUB = 300,
-    LT = 301,
-    LTE = 302,
-    GT = 303,
-    GTE = 304,
-    EQ = 305,
-    NEQ = 306,
-    NOT = 307
+    L_PAREN = 290,
+    R_PAREN = 291,
+    L_SQUARE_BRACKET = 292,
+    R_SQUARE_BRACKET = 293,
+    MULT = 294,
+    DIV = 295,
+    MOD = 296,
+    ADD = 297,
+    SUB = 298,
+    LT = 299,
+    LTE = 300,
+    GT = 301,
+    GTE = 302,
+    EQ = 303,
+    NEQ = 304,
+    NOT = 305,
+    NUMBER = 306,
+    IDENT = 307
   };
 #endif
 
@@ -103,7 +103,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 48 "mini_l.y" /* yacc.c:1909  */
+#line 49 "mini_l.y" /* yacc.c:1909  */
 
   int val;
   char* op_val;

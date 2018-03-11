@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Attribute.h"
 
 using namespace std;
 
@@ -26,5 +27,12 @@ class Utils {
 		for(int i = 0; i < codeToWrite.size(); i++) {
 			cout << codeToWrite.at(i) << endl;
 		}
+	}
+	
+	void deepCopy(Attribute* a, Attribute* b) {
+		a->name = b->name;
+		a->type = b->type;
+		a->list = b->list;
+		a->number_val = b->number_val;
 	}
 };
