@@ -17,6 +17,8 @@
 	#include <stdlib.h>
 	#include <string>
 	#include <typeinfo>
+	#include <map>
+	#include <stack>
 	
 	using namespace std;
 	
@@ -40,10 +42,16 @@
 	MilCode mc;
 	Utils utils;
 	
-	int IDENT_INTEGER_TYPE = 1;
-	int IDENT_LIST_TYPE = 2;
-	int INTEGER_TYPE = 3;
-	int NUMBER_TYPE = 4;
+	int ATTR_INTEGER_TYPE = 0;
+	int ATTR_LIST_TYPE = 1;
+	int ATTR_FUNC_TYPE = 2;
+	int NUMBER_TYPE = 3;
+	
+	stack<string> identStack;
+	stack<string> varStack;
+	stack<string> expStack;
+	stack<string> paramStack;
+	stack<string> labelStack;
 %}
 
 %union{
@@ -67,7 +75,7 @@
 %token <op_val> IDENT
 %type <attr> identifier_ns
 %type <attr> var
-%type <attr> expression multiplicative_expr term upterm term_s termidentifier rexpr
+%type <attr> expression multiplicative_expr term rexpr
 %type <op_val> comp
 
 %error-verbose
@@ -120,14 +128,14 @@ identifier_ns: 	IDENT COMMA identifier_ns {
 	p("identifier_ns checking the sub identifier_ns " + $3->toString());
 	$$ = $3;
 	$$->list.push_back(utils.charToString($1));
-	$$->type = IDENT_LIST_TYPE;
+	$$->type = ATTR_LIST_TYPE;
 	p("identifier_ns copied sub identifier_ns, should have two or more now " + $$->toString());
 }
 				| IDENT {
 	p("identifier_ns -> IDENT: " + utils.charToString($1));
 	$$ = new Attribute();
 	$$->name = "IDENT LIST";
-	$$->type = IDENT_INTEGER_TYPE;
+	$$->type = ATTR_INTEGER_TYPE;
 	$$->list.push_back($1);
 }
              ;
@@ -159,10 +167,10 @@ d_statement: DO BEGINLOOP statement_ns ENDLOOP WHILE bool_expr {}
 e_statement: FOREACH IDENT IN IDENT BEGINLOOP statement_ns ENDLOOP {}
            ;
 
-f_statement: READ var_ns {}
+f_statement: READ var var_ns {}
            ;
 
-g_statement: WRITE var_ns {}
+g_statement: WRITE var var_ns {}
            ;
 
 h_statement: CONTINUE {}
@@ -173,15 +181,19 @@ i_statement: RETURN expression {}
 
 var: 	IDENT {
 	$$ = new Attribute();
-	$$->type = IDENT_INTEGER_TYPE;
+	$$->type = ATTR_INTEGER_TYPE;
 	$$->name = utils.charToString($1);
 	p("var here: " + $$->toString());
 } 
-		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {}
+		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
+	
+}
    ;
 
-var_ns: var COMMA var_ns {} 
-		| var {}
+var_ns: 
+		| COMMA var var_ns {
+	varStack.push($2->name);
+}		
       ;
 
 bool_expr: relation_and_expr  {}
@@ -215,24 +227,14 @@ expression: multiplicative_expr ADD multiplicative_expr {}
 			| multiplicative_expr {}
           ;
 
-multiplicative_expr: term term_s {}  
+multiplicative_expr: multiplicative_expr MULT term {}  
+					| multiplicative_expr DIV term {} 
+					| multiplicative_expr MOD term {} 
 					| term {} 
                    ;
-			
-term_s: MULT term term_s {}
-		| MULT term {}
-		| DIV term term_s {}
-		| DIV term {}
-		| MOD term term_s {}
-		| MOD term {}
-		;
 
-term: 	upterm { $$ = $1;}
-		| SUB upterm {}
-		| IDENT termidentifier {}
-    ;
-
-upterm: var {
+term: 	SUB var { $$ = $2;}
+		| var { 
 	p("upterm, copying var: " + $1->toString());
 	$$ = new Attribute();
 	$$->name = $1->name;
@@ -240,28 +242,25 @@ upterm: var {
 	$$->list = $1->list;
 	$$->number_val = $1->number_val;
 }
-		| NUMBER {
+		| SUB NUMBER {}
+		| NUMBER  { 
 	p("NUMBER, value is: " + utils.intToString($1));
 	$$ = new Attribute();
 	$$->name = utils.intToString($1);
 	$$->type = NUMBER_TYPE;
 	$$->list.push_back(utils.intToString($1));
-	$$->number_val = $1;
+	$$->number_val = $1; 
 }
-		| L_PAREN expression R_PAREN {
-	p("L_PAREN expression R_PAREN, value is: " + $2->toString());
-	$$ = new Attribute();
-	utils.deepCopy($$, $2);
-}
-      ;
+		| L_PAREN expression R_PAREN { }
+		| IDENT L_PAREN expression exp_s R_PAREN {}
+		| IDENT L_PAREN R_PAREN {}
+    ;
 
-termidentifier: L_PAREN termexpression R_PAREN {}
-				| L_PAREN R_PAREN {}
-              ;
-
-termexpression: expression {}
-				| expression COMMA termexpression {}
-
+	exp_s: COMMA expression exp_s {
+                   expStack.push($2->name); 
+                 }
+               |
+               ;
 %%
 
 int main(int argc, char ** argv) {

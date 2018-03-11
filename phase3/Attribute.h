@@ -9,12 +9,14 @@ class Attribute {
 	public:
 	Attribute() {
 		name = "";
+		index = "";
 		number_val = -1;
 		type = -1;
+		sizeOfAttr = -1;
 	}
 	string toString() {
 		stringstream ss;
-		ss << "Attribute { name : \"" + name + "\" , number_val: " << number_val << " , type: " << type << " , list: ";
+		ss << "Attribute { name : \"" << name << "\" index : \"" << index << "\" , number_val: " << number_val << " , type: " << type << " , sizeOfAttr: " << sizeOfAttr << " , list: ";
 		if(list.empty()) {
 			ss << "empty }";
 		}
@@ -29,7 +31,9 @@ class Attribute {
 		return ss.str();
 	}
 	string name;
+	string index;
 	int number_val;
 	int type;
+	int sizeOfAttr;
 	vector<string> list;
 };
