@@ -1,4 +1,4 @@
-function fibonacci;
+function main;
 beginparams
 	l : integer;
 	h,i,j : integer;
