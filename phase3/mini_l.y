@@ -19,6 +19,7 @@
 	#include <typeinfo>
 	#include <map>
 	#include <stack>
+	#include <regex>
 	
 	using namespace std;
 	
@@ -29,6 +30,7 @@
 	string charToString(char*);
 	void p(string);
 	void pushToOutputAndClear();
+	string checkForExtraSpace(string);
 	
 	struct Function {
 		string name;
@@ -235,7 +237,7 @@ statement: 	var ASSIGN expression {
 	codeStream << mc.gotoLabel(start) << endl;
 	codeStream << mc.label(endLabel) << endl;
 	
-	
+	pushToOutputAndClear();
 }
 			| DO BEGINLOOP {
 	string start = tempGen.getLabel();
@@ -599,18 +601,20 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
-   p("before yyparse");
-   yyparse();
-   p("after yyparse");
-   
-   utils.printCode(codeToWrite);
-   
+	p("before yyparse");
+	yyparse();
+	p("after yyparse");
+	
+	string theCode = outputCodeStream.str();
+	
+	theCode = checkForExtraSpace(theCode);
+
 	ofstream file;
 	file.open("mil_code.mil");
-	file << outputCodeStream.str();
+	file << theCode;
 	file.close();
-	
-	cout << "Code looks like: " + outputCodeStream.str();
+
+	cout << "Code looks like: \n" + theCode;
   
   return 0;
 }
@@ -660,4 +664,8 @@ void pushToOutputAndClear() {
 	outputCodeStream << codeStream.rdbuf();
 	codeStream.clear();
 	codeStream.str(" ");
+}
+
+string checkForExtraSpace(string s) {
+	return regex_replace(s, regex(" endfunc"), "endfunc");
 }
