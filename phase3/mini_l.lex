@@ -82,7 +82,7 @@ badidb		{ident}_+
 " "		{curPos += yyleng;}
 "	"	{curPos += yyleng;}
 "##".*	{curPos += yyleng;}
-{number}	{val = atoi(strdup(yytext)); op_val = strdup(yytext); yylval.op_val = strdup(yytext); string s(yytext); cout << "number is : " << s << " in flex" << endl; stringstream ss(s); int temp = 0; ss >> temp; yylval.val = temp; return NUMBER;}
+{number}	{val = atoi(strdup(yytext)); op_val = strdup(yytext); yylval.op_val = strdup(yytext); string s(yytext); /*cout << "number is : " << s << " in flex" << endl;*/ stringstream ss(s); int temp = 0; ss >> temp; yylval.val = temp; return NUMBER;}
 {ident}	{op_val = strdup(yytext); yylval.op_val = strdup(yytext); /*op_val[strlen(op_val)-1] = '\0';*/ return IDENT;}
 {badida}	{printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}
 {badidb}	{printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n", curLine, curPos, yytext); curPos += yyleng; exit(0);}

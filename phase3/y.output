@@ -77,8 +77,8 @@ Grammar
    48     | LTE
    49     | GTE
 
-   50 expression: multiplicative_expr ADD multiplicative_expr
-   51           | multiplicative_expr SUB multiplicative_expr
+   50 expression: expression ADD multiplicative_expr
+   51           | expression SUB multiplicative_expr
    52           | multiplicative_expr
 
    53 multiplicative_expr: multiplicative_expr MULT term
@@ -204,7 +204,7 @@ rexpr (74)
 comp (75)
     on left: 44 45 46 47 48 49, on right: 40
 expression (76)
-    on left: 50 51 52, on right: 15 26 28 40 61 62 63 65
+    on left: 50 51 52, on right: 15 26 28 40 50 51 61 62 63 65
 multiplicative_expr (77)
     on left: 53 54 55 56, on right: 50 51 52 53 54 55
 term (78)
@@ -767,31 +767,31 @@ State 57
 State 58
 
    40 rexpr: expression . comp expression
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
 
-    LT   shift, and go to state 82
-    LTE  shift, and go to state 83
-    GT   shift, and go to state 84
-    GTE  shift, and go to state 85
-    EQ   shift, and go to state 86
-    NEQ  shift, and go to state 87
+    ADD  shift, and go to state 82
+    SUB  shift, and go to state 83
+    LT   shift, and go to state 84
+    LTE  shift, and go to state 85
+    GT   shift, and go to state 86
+    GTE  shift, and go to state 87
+    EQ   shift, and go to state 88
+    NEQ  shift, and go to state 89
 
-    comp  go to state 88
+    comp  go to state 90
 
 
 State 59
 
-   50 expression: multiplicative_expr . ADD multiplicative_expr
-   51           | multiplicative_expr . SUB multiplicative_expr
-   52           | multiplicative_expr .
+   52 expression: multiplicative_expr .
    53 multiplicative_expr: multiplicative_expr . MULT term
    54                    | multiplicative_expr . DIV term
    55                    | multiplicative_expr . MOD term
 
-    MULT  shift, and go to state 89
-    DIV   shift, and go to state 90
-    MOD   shift, and go to state 91
-    ADD   shift, and go to state 92
-    SUB   shift, and go to state 93
+    MULT  shift, and go to state 91
+    DIV   shift, and go to state 92
+    MOD   shift, and go to state 93
 
     $default  reduce using rule 52 (expression)
 
@@ -868,6 +868,11 @@ State 66
 State 67
 
    26 statement: RETURN expression .
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
+
+    ADD  shift, and go to state 82
+    SUB  shift, and go to state 83
 
     $default  reduce using rule 26 (statement)
 
@@ -942,17 +947,21 @@ State 72
 State 73
 
    40 rexpr: expression . comp expression
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
    62 term: L_PAREN expression . R_PAREN
 
     R_PAREN  shift, and go to state 105
-    LT       shift, and go to state 82
-    LTE      shift, and go to state 83
-    GT       shift, and go to state 84
-    GTE      shift, and go to state 85
-    EQ       shift, and go to state 86
-    NEQ      shift, and go to state 87
+    ADD      shift, and go to state 82
+    SUB      shift, and go to state 83
+    LT       shift, and go to state 84
+    LTE      shift, and go to state 85
+    GT       shift, and go to state 86
+    GTE      shift, and go to state 87
+    EQ       shift, and go to state 88
+    NEQ      shift, and go to state 89
 
-    comp  go to state 88
+    comp  go to state 90
 
 
 State 74
@@ -1060,47 +1069,75 @@ State 81
 
 State 82
 
+   50 expression: expression ADD . multiplicative_expr
+
+    L_PAREN  shift, and go to state 66
+    SUB      shift, and go to state 49
+    NUMBER   shift, and go to state 51
+    IDENT    shift, and go to state 52
+
+    var                  go to state 53
+    multiplicative_expr  go to state 112
+    term                 go to state 60
+
+
+State 83
+
+   51 expression: expression SUB . multiplicative_expr
+
+    L_PAREN  shift, and go to state 66
+    SUB      shift, and go to state 49
+    NUMBER   shift, and go to state 51
+    IDENT    shift, and go to state 52
+
+    var                  go to state 53
+    multiplicative_expr  go to state 113
+    term                 go to state 60
+
+
+State 84
+
    46 comp: LT .
 
     $default  reduce using rule 46 (comp)
 
 
-State 83
+State 85
 
    48 comp: LTE .
 
     $default  reduce using rule 48 (comp)
 
 
-State 84
+State 86
 
    47 comp: GT .
 
     $default  reduce using rule 47 (comp)
 
 
-State 85
+State 87
 
    49 comp: GTE .
 
     $default  reduce using rule 49 (comp)
 
 
-State 86
+State 88
 
    44 comp: EQ .
 
     $default  reduce using rule 44 (comp)
 
 
-State 87
+State 89
 
    45 comp: NEQ .
 
     $default  reduce using rule 45 (comp)
 
 
-State 88
+State 90
 
    40 rexpr: expression comp . expression
 
@@ -1110,40 +1147,14 @@ State 88
     IDENT    shift, and go to state 52
 
     var                  go to state 53
-    expression           go to state 112
+    expression           go to state 114
     multiplicative_expr  go to state 59
     term                 go to state 60
 
 
-State 89
-
-   53 multiplicative_expr: multiplicative_expr MULT . term
-
-    L_PAREN  shift, and go to state 66
-    SUB      shift, and go to state 49
-    NUMBER   shift, and go to state 51
-    IDENT    shift, and go to state 52
-
-    var   go to state 53
-    term  go to state 113
-
-
-State 90
-
-   54 multiplicative_expr: multiplicative_expr DIV . term
-
-    L_PAREN  shift, and go to state 66
-    SUB      shift, and go to state 49
-    NUMBER   shift, and go to state 51
-    IDENT    shift, and go to state 52
-
-    var   go to state 53
-    term  go to state 114
-
-
 State 91
 
-   55 multiplicative_expr: multiplicative_expr MOD . term
+   53 multiplicative_expr: multiplicative_expr MULT . term
 
     L_PAREN  shift, and go to state 66
     SUB      shift, and go to state 49
@@ -1156,30 +1167,28 @@ State 91
 
 State 92
 
-   50 expression: multiplicative_expr ADD . multiplicative_expr
+   54 multiplicative_expr: multiplicative_expr DIV . term
 
     L_PAREN  shift, and go to state 66
     SUB      shift, and go to state 49
     NUMBER   shift, and go to state 51
     IDENT    shift, and go to state 52
 
-    var                  go to state 53
-    multiplicative_expr  go to state 116
-    term                 go to state 60
+    var   go to state 53
+    term  go to state 116
 
 
 State 93
 
-   51 expression: multiplicative_expr SUB . multiplicative_expr
+   55 multiplicative_expr: multiplicative_expr MOD . term
 
     L_PAREN  shift, and go to state 66
     SUB      shift, and go to state 49
     NUMBER   shift, and go to state 51
     IDENT    shift, and go to state 52
 
-    var                  go to state 53
-    multiplicative_expr  go to state 117
-    term                 go to state 60
+    var   go to state 53
+    term  go to state 117
 
 
 State 94
@@ -1241,16 +1250,24 @@ State 99
 
 State 100
 
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
    62 term: L_PAREN expression . R_PAREN
 
     R_PAREN  shift, and go to state 105
+    ADD      shift, and go to state 82
+    SUB      shift, and go to state 83
 
 
 State 101
 
    28 var: IDENT L_SQUARE_BRACKET expression . R_SQUARE_BRACKET
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
 
     R_SQUARE_BRACKET  shift, and go to state 122
+    ADD               shift, and go to state 82
+    SUB               shift, and go to state 83
 
 
 State 102
@@ -1263,6 +1280,11 @@ State 102
 State 103
 
    15 statement: var ASSIGN expression .
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
+
+    ADD  shift, and go to state 82
+    SUB  shift, and go to state 83
 
     $default  reduce using rule 15 (statement)
 
@@ -1283,9 +1305,13 @@ State 105
 
 State 106
 
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
    61 term: SUB L_PAREN expression . R_PAREN
 
     R_PAREN  shift, and go to state 123
+    ADD      shift, and go to state 82
+    SUB      shift, and go to state 83
 
 
 State 107
@@ -1297,9 +1323,13 @@ State 107
 
 State 108
 
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
    63 term: IDENT L_PAREN expression . exp_s R_PAREN
 
     COMMA  shift, and go to state 124
+    ADD    shift, and go to state 82
+    SUB    shift, and go to state 83
 
     $default  reduce using rule 66 (exp_s)
 
@@ -1343,58 +1373,63 @@ State 111
 
 State 112
 
+   50 expression: expression ADD multiplicative_expr .
+   53 multiplicative_expr: multiplicative_expr . MULT term
+   54                    | multiplicative_expr . DIV term
+   55                    | multiplicative_expr . MOD term
+
+    MULT  shift, and go to state 91
+    DIV   shift, and go to state 92
+    MOD   shift, and go to state 93
+
+    $default  reduce using rule 50 (expression)
+
+
+State 113
+
+   51 expression: expression SUB multiplicative_expr .
+   53 multiplicative_expr: multiplicative_expr . MULT term
+   54                    | multiplicative_expr . DIV term
+   55                    | multiplicative_expr . MOD term
+
+    MULT  shift, and go to state 91
+    DIV   shift, and go to state 92
+    MOD   shift, and go to state 93
+
+    $default  reduce using rule 51 (expression)
+
+
+State 114
+
    40 rexpr: expression comp expression .
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
+
+    ADD  shift, and go to state 82
+    SUB  shift, and go to state 83
 
     $default  reduce using rule 40 (rexpr)
 
 
-State 113
+State 115
 
    53 multiplicative_expr: multiplicative_expr MULT term .
 
     $default  reduce using rule 53 (multiplicative_expr)
 
 
-State 114
+State 116
 
    54 multiplicative_expr: multiplicative_expr DIV term .
 
     $default  reduce using rule 54 (multiplicative_expr)
 
 
-State 115
+State 117
 
    55 multiplicative_expr: multiplicative_expr MOD term .
 
     $default  reduce using rule 55 (multiplicative_expr)
-
-
-State 116
-
-   50 expression: multiplicative_expr ADD multiplicative_expr .
-   53 multiplicative_expr: multiplicative_expr . MULT term
-   54                    | multiplicative_expr . DIV term
-   55                    | multiplicative_expr . MOD term
-
-    MULT  shift, and go to state 89
-    DIV   shift, and go to state 90
-    MOD   shift, and go to state 91
-
-    $default  reduce using rule 50 (expression)
-
-
-State 117
-
-   51 expression: multiplicative_expr SUB multiplicative_expr .
-   53 multiplicative_expr: multiplicative_expr . MULT term
-   54                    | multiplicative_expr . DIV term
-   55                    | multiplicative_expr . MOD term
-
-    MULT  shift, and go to state 89
-    DIV   shift, and go to state 90
-    MOD   shift, and go to state 91
-
-    $default  reduce using rule 51 (expression)
 
 
 State 118
@@ -1538,9 +1573,13 @@ State 130
 
 State 131
 
+   50 expression: expression . ADD multiplicative_expr
+   51           | expression . SUB multiplicative_expr
    65 exp_s: COMMA expression . exp_s
 
     COMMA  shift, and go to state 124
+    ADD    shift, and go to state 82
+    SUB    shift, and go to state 83
 
     $default  reduce using rule 66 (exp_s)
 

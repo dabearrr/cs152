@@ -354,6 +354,7 @@ bool_expr: bool_expr OR relation_and_expr  {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
+	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.logicalBinary("||", temp, $1->name, $3->name) << endl;
 }
 			| relation_and_expr {
@@ -366,6 +367,7 @@ relation_and_expr: 	relation_and_expr AND relation_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
+	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.logicalBinary("&&", temp, $1->name, $3->name) << endl;
 }
 					| relation_expr {
@@ -382,6 +384,7 @@ relation_expr: 	rexpr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	$$->name = temp;
+	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.logicalNot(temp, $2->name) << endl;
 }
              ;
@@ -421,14 +424,14 @@ comp:	EQ { $$ = const_cast<char*>("=="); }
 		| GTE { $$ = const_cast<char*>(">="); }
     ;
 
-expression: multiplicative_expr ADD multiplicative_expr {
+expression: expression ADD multiplicative_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	codeStream << mc.varName(temp) << endl;
 	codeStream << mc.arithmatic("+", temp, $1->name, $3->name) << endl;
 	$$->name = temp;
 } 
-			| multiplicative_expr SUB multiplicative_expr {
+			| expression SUB multiplicative_expr {
 	$$ = new Attribute();
 	string temp = tempGen.getTemp();
 	codeStream << mc.varName(temp) << endl;
