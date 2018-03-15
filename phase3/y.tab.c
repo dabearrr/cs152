@@ -1455,7 +1455,7 @@ yyreduce:
 
   case 5:
 #line 126 "mini_l.y" /* yacc.c:1646  */
-    { codeStream << "func " << (yyvsp[0].op_val) << endl; }
+    { codeStream << mc.functionDeclaration((yyvsp[0].op_val)) << endl; }
 #line 1460 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1473,7 +1473,7 @@ yyreduce:
   case 7:
 #line 132 "mini_l.y" /* yacc.c:1646  */
     {
-	outputCodeStream << "endfunc\n";
+	outputCodeStream << mc.endFunction() << endl;
 	symbolTable.clear();
 	if (utils.charToString((yyvsp[-12].op_val)) == "main") {
 		mainExists = true;
@@ -1499,7 +1499,7 @@ yyreduce:
 			string temp = identStack.top();
 			Symbol tempSymbol(0, 0, temp, INT);
 			addSymbol(tempSymbol);
-			codeStream << ". " << temp << endl;
+			codeStream << mc.varName(temp) << endl;
 			identStack.pop();
 		}
 }
@@ -1516,7 +1516,7 @@ yyreduce:
 			string temp = identStack.top();
 			Symbol tempSymbol(0, (yyvsp[-3].val), temp, INTARRAY);
 			addSymbol(tempSymbol);
-			codeStream << ".[] " << temp << ", " << (yyvsp[-3].val) << endl;
+			codeStream << mc.arrayName(temp, (yyvsp[-3].val)) << endl;
 			identStack.pop();
 		}
 }

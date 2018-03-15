@@ -123,14 +123,14 @@ program:
 			| function program
 			;
 			
-function:	FUNCTION IDENT { codeStream << "func " << $2 << endl; } SEMICOLON BEGIN_PARAMS declaration_s {
+function:	FUNCTION IDENT { codeStream << mc.functionDeclaration($2) << endl; } SEMICOLON BEGIN_PARAMS declaration_s {
 	while(!paramStack.empty()) {
 		codeStream << "= " << paramStack.top() << ", " << "$" << paramCount++ << endl;
 		paramStack.pop();
 	}
 }	
 			END_PARAMS BEGIN_LOCALS declaration_s END_LOCALS BEGIN_BODY statement_ns END_BODY {
-	outputCodeStream << "endfunc\n";
+	outputCodeStream << mc.endFunction() << endl;
 	symbolTable.clear();
 	if (utils.charToString($2) == "main") {
 		mainExists = true;
@@ -161,7 +161,7 @@ declaration: IDENT identifier_ns COLON INTEGER {
 			string temp = identStack.top();
 			Symbol tempSymbol(0, 0, temp, INT);
 			addSymbol(tempSymbol);
-			codeStream << ". " << temp << endl;
+			codeStream << mc.varName(temp) << endl;
 			identStack.pop();
 		}
 }
@@ -173,7 +173,7 @@ declaration: IDENT identifier_ns COLON INTEGER {
 			string temp = identStack.top();
 			Symbol tempSymbol(0, $6, temp, INTARRAY);
 			addSymbol(tempSymbol);
-			codeStream << ".[] " << temp << ", " << $6 << endl;
+			codeStream << mc.arrayName(temp, $6) << endl;
 			identStack.pop();
 		}
 }

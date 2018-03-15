@@ -105,6 +105,15 @@ class MilCode {
 	string condGotoLabel(string label, string predicate) {
 	    return ("?:= " + label + ", " + predicate);
 	}
+	
+	//Function
+	string functionDeclaration(string name) {
+		return "func " + name;
+	}
+	
+	string endFunction() {
+		return "endfunc";
+	}
 
 	private:
 	Utils utils;
