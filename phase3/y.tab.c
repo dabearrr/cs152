@@ -2389,20 +2389,18 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
-	p("before yyparse");
+	p("before yyparse\n");
 	yyparse();
-	p("after yyparse");
+	p("after yyparse\n");
 	
 	string theCode = outputCodeStream.str();
 	
-	theCode = checkForExtraSpace(theCode);
+	cout << "Code is: " << theCode << endl;
 
 	ofstream file;
 	file.open("mil_code.mil");
 	file << theCode;
 	file.close();
-
-	cout << "Code looks like: \n" + theCode;
   
   return 0;
 }
@@ -2455,5 +2453,7 @@ void pushToOutputAndClear() {
 }
 
 string checkForExtraSpace(string s) {
-	return regex_replace(s, regex(" endfunc"), "endfunc");
+	string temp = " endfunc";
+	string temp2 = "endfunc";
+	return regex_replace(s, regex(temp), temp2);
 }
