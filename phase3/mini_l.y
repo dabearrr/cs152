@@ -56,6 +56,8 @@
 	void checkDeclaredFunction(string);
 	void checkDeclaredSymbol(string);
 	
+	ostream& operator<< (ostream & os, stack<string> my_stack);
+	
 	extern int curPos;
 	extern int curLine;
 	extern char* yytext;
@@ -79,6 +81,7 @@
 	stack<string> expStack;
 	stack<string> paramStack;
 	stack<string> labelStack;
+	stack<string> whileStack;
 	
 	stringstream codeStream;
 	ostringstream outputCodeStream;
@@ -225,6 +228,7 @@ statement: 	var ASSIGN expression {
 	
 	labelStack.push(start);
 	labelStack.push(endLabel);
+	whileStack.push(start);
 }			
 			statement SEMICOLON statement_ns ENDLOOP {
 	pushToOutputAndClear();
@@ -233,6 +237,7 @@ statement: 	var ASSIGN expression {
 	labelStack.pop();
 	string start = labelStack.top();
 	labelStack.pop();
+	whileStack.pop();
 	
 	codeStream << mc.gotoLabel(start) << endl;
 	codeStream << mc.label(endLabel) << endl;
@@ -241,17 +246,29 @@ statement: 	var ASSIGN expression {
 }
 			| DO BEGINLOOP {
 	string start = tempGen.getLabel();
+	string endLabel = tempGen.getLabel();
 	labelStack.push(start);
+	labelStack.push(endLabel);
+	whileStack.push(endLabel);
 	
 	outputCodeStream << mc.label(start) << endl;
 	pushToOutputAndClear();
+	p("do while top label is: " + mc.gotoLabel(labelStack.top()));
 }
-			statement SEMICOLON statement_ns ENDLOOP WHILE bool_expr {
-	string start = labelStack.top();
-	codeStream << mc.condGotoLabel(start, $9->name) << endl;
+			statement SEMICOLON statement_ns ENDLOOP WHILE {
+	string endLabel = labelStack.top();
 	labelStack.pop();
+	codeStream << mc.label(endLabel) << endl;
+
+}			
+			bool_expr {
+	string start = labelStack.top();
+	labelStack.pop();
+	codeStream << mc.condGotoLabel(start, $10->name) << endl;
+	whileStack.pop();
 	
 	pushToOutputAndClear();
+	p("do while condition is: " + $10->name);
 }
 			| FOREACH IDENT IN IDENT BEGINLOOP statement SEMICOLON statement_ns ENDLOOP {
 				//give up
@@ -283,11 +300,11 @@ statement: 	var ASSIGN expression {
 	}
 }
 			| CONTINUE { 
-	if(!labelStack.empty()) {
-		codeStream << mc.gotoLabel(labelStack.top()) << endl;
-		outputCodeStream << codeStream.rdbuf();
-		codeStream.clear();
-		codeStream.str(" ");
+	if(!whileStack.empty()) {
+		p("continue is: " + mc.gotoLabel(whileStack.top()));
+		cout << "whileStack has: " << whileStack << endl;
+		codeStream << mc.gotoLabel(whileStack.top()) << endl;
+		pushToOutputAndClear();
 	} else {
 		yyerror("Cannot use CONTINUE outside of a loop");
 	}
@@ -671,4 +688,13 @@ string checkForExtraSpace(string s) {
 	string temp = " endfunc";
 	string temp2 = "endfunc";
 	return regex_replace(s, regex(temp), temp2);
+}
+
+ostream & operator<<(ostream & os, stack<string> my_stack) {
+    while(!my_stack.empty()) //body
+    {
+        os << my_stack.top() << " ";
+        my_stack.pop();
+    }
+    return os; // end of function
 }
