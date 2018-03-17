@@ -1,0 +1,37 @@
+## 3. Not defining a main function
+function somefunction;
+beginparams
+endparams
+beginlocals
+    m, n : integer;
+    o : array[5] of integer;
+
+    ## 4. Defining a variable more than once
+    n : array[5] of integer;
+
+    ## 5. Trying to name a variable with the same name as a reserved keyword -- doesnt work
+
+    ## 8. Declaring an array of size <= 0 -- doesnt work
+
+endlocals
+beginbody
+
+    m := 5;
+
+    ## 1. Using a variable without having first declared it
+    p := m + 2;
+
+    ## 2. Calling a function which has not been defined
+    m := anotherfunction(m);
+
+    ## 6. Forgetting to specify an array index when using an array variable -- doesnt work
+
+    ## 7. Specifying an array index when using a regular integer variable
+    m := m[0];
+
+    ## 10. Attempting to use a foreach loop with a scalar variable -- doesnt work
+
+    ## 9. Using continue statement outside a loop
+    continue;
+
+endbody

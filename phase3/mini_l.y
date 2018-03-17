@@ -24,6 +24,7 @@
 	using namespace std;
 	
 	int yyerror (const char* s);
+	int errorLogger(string);
 	int yylex(void);
 	string intToString(int x);
 	void printCode();
@@ -84,6 +85,7 @@
 	stack<string> whileStack;
 	
 	stringstream codeStream;
+	stringstream errorStream;
 	ostringstream outputCodeStream;
 	
 	int paramCount = 0;
@@ -120,7 +122,7 @@
 %start start_here
 
 %%
-start_here:	program { if (!mainExists) { yyerror("Error: main does not exist"); } }
+start_here:	program { if (!mainExists) { errorLogger("Main function does not exist"); } }
 
 program:	
 			| function program
@@ -302,11 +304,10 @@ statement: 	var ASSIGN expression {
 			| CONTINUE { 
 	if(!whileStack.empty()) {
 		p("continue is: " + mc.gotoLabel(whileStack.top()));
-		cout << "whileStack has: " << whileStack << endl;
 		codeStream << mc.gotoLabel(whileStack.top()) << endl;
 		pushToOutputAndClear();
 	} else {
-		yyerror("Cannot use CONTINUE outside of a loop");
+		errorLogger("Cannot use CONTINUE outside of a loop");
 	}
 }
 			| RETURN expression {
@@ -321,7 +322,7 @@ statement: 	var ASSIGN expression {
 var: 	IDENT {
 	checkDeclaredSymbol($1);
 	if (symbolTable[$1].type == INTARRAY) {
-		yyerror("Symbol is actually an int array type");
+		errorLogger("Symbol is actually an int array type");
 	}
 	$$ = new Attribute();
 	$$->type = ATTR_INTEGER_TYPE;
@@ -331,7 +332,7 @@ var: 	IDENT {
 		| IDENT L_SQUARE_BRACKET expression R_SQUARE_BRACKET {
 	
 	if (symbolTable[$1].type == INT) {
-		yyerror("Symbol is actually an int type");
+		errorLogger("Symbol is actually an int type");
 	}
 	if($3->type == ATTR_LIST_TYPE) {
 		string temp = tempGen.getTemp();
@@ -621,12 +622,13 @@ int main(int argc, char ** argv) {
       inputFile = stdin;
    }
    
-	p("before yyparse\n");
 	yyparse();
-	p("after yyparse\n");
+	
+	if(!errorStream.str().empty()) {
+		cout << "The semantic errors are: " << endl << errorStream.str() << endl;
+	}
 	
 	string theCode = outputCodeStream.str();
-	
 	cout << "Code is: " << theCode << endl;
 
 	ofstream file;
@@ -643,20 +645,25 @@ int yyerror(const char* s) {
   return 0;
 }
 
+int errorLogger(string s) {
+	errorStream << "Error at line " << curLine << ", column " << curPos << ": Error is: \"" << s << "\"" << endl;
+	return 0;
+}
+
 void p(string log) {
-	cout << "Logger #" << testCounter++ << " " << log << endl;
+	//cout << "Logger #" << testCounter++ << " " << log << endl;
 }
 
 void checkDeclaredFunction(string f) {
 	if(functionTable.find(f) == functionTable.end()) {
 		string error = "Function " + f + " has not been declared";
-		yyerror(error.c_str());
+		errorLogger(error.c_str());
 	}
 }
 void checkDeclaredSymbol(string s) {
 	if(symbolTable.find(s) == symbolTable.end()) {
 		string error = "Symbol " + s + " has not been declared";
-		yyerror(error.c_str());
+		errorLogger(error.c_str());
 	}
 }
 
@@ -665,7 +672,7 @@ void addFunction(Function f) {
 		functionTable[f.name] = f;
 	} else {
 		string error = "Function " + f.name + " has already been declared";
-		yyerror(error.c_str());
+		errorLogger(error.c_str());
 	}
 }
 
@@ -674,7 +681,7 @@ void addSymbol(Symbol s) {
 		symbolTable[s.name] = s;
 	} else {
 		string error = "Symbol " + s.name + " has already been declared";
-		yyerror(error.c_str());
+		errorLogger(error.c_str());
 	}
 }
 
@@ -691,10 +698,10 @@ string checkForExtraSpace(string s) {
 }
 
 ostream & operator<<(ostream & os, stack<string> my_stack) {
-    while(!my_stack.empty()) //body
+    while(!my_stack.empty())
     {
         os << my_stack.top() << " ";
         my_stack.pop();
     }
-    return os; // end of function
+    return os;
 }
